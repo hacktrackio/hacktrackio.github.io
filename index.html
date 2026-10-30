@@ -3,160 +3,238 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CyberLab — apprendre la cybersécurité</title>
+<title>HACKTRACK // TRANSMISSION CLASSIFIED</title>
 <style>
 :root{
-  --bg:#0b0f14; --panel:#111821; --ink:#d7e3f0; --mut:#8aa0b4;
-  --acc:#58e6a4; --warn:#ffb454; --dang:#ff5c6c; --info:#6cb8ff;
-  --code:#0a1118; --line:#1b2634; --sel:#1f3b2d;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --bg:#07090c; --panel:#0d1117; --ink:#c7d2db; --mut:#5f7083;
+  --acc:#ff5c3a; --amb:#ffb454; --ok:#58e6a4; --info:#6cb8ff; --dang:#ff3b47;
+  --code:#05070a; --line:#1a2432; --sel:#2a1a16;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
-a{color:var(--info);text-decoration:none}
-a:hover{text-decoration:underline}
-::selection{background:var(--sel)}
-.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
-nav.side{
-  background:var(--panel);border-right:1px solid var(--line);
-  padding:18px 14px;position:sticky;top:0;height:100vh;overflow:auto
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--mono);font-size:14px;line-height:1.55;overflow-x:hidden}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9000;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 3px);
+  mix-blend-mode:multiply;
 }
-nav.side h1{font-size:18px;margin:0 0 4px;color:var(--acc);font-family:var(--mono)}
-nav.side .sub{color:var(--mut);font-size:12px;margin-bottom:16px}
+body.noscan::before{display:none}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9001;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);
+}
+a{color:var(--info);text-decoration:none}
+a:hover{text-decoration:underline;color:var(--amb)}
+::selection{background:var(--sel);color:var(--amb)}
+
+/* boot */
+#boot{position:fixed;inset:0;background:#000;z-index:10000;display:flex;align-items:center;justify-content:center;padding:24px;font-family:var(--mono);color:var(--acc);font-size:13px}
+#boot pre{margin:0;max-width:720px;width:100%;white-space:pre-wrap;color:var(--amb)}
+#boot .cur{display:inline-block;width:8px;height:14px;background:var(--amb);animation:bl 0.9s steps(2) infinite;vertical-align:text-bottom}
+@keyframes bl{50%{opacity:0}}
+.gone{opacity:0;pointer-events:none;transition:opacity .4s}
+
+/* header bar */
+.topbar{
+  position:sticky;top:0;z-index:100;background:#000;border-bottom:1px solid var(--line);
+  padding:8px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;font-size:11px;letter-spacing:.08em
+}
+.topbar .brand{color:var(--acc);font-weight:700}
+.topbar .meta{color:var(--mut);display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.topbar .meta b{color:var(--amb);font-weight:600}
+.topbar .ctl{display:flex;gap:6px}
+.topbar button{background:transparent;color:var(--mut);border:1px solid var(--line);padding:3px 8px;font-family:var(--mono);font-size:10px;cursor:pointer;letter-spacing:.08em}
+.topbar button:hover{color:var(--amb);border-color:var(--amb)}
+
+/* layout */
+.app{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 36px)}
+nav.side{background:var(--panel);border-right:1px solid var(--line);padding:16px 12px;position:sticky;top:36px;height:calc(100vh - 36px);overflow:auto}
+nav.side .head{color:var(--acc);font-size:11px;letter-spacing:.14em;border-bottom:1px dashed var(--line);padding-bottom:8px;margin-bottom:12px}
+nav.side .head b{display:block;color:var(--amb);font-size:16px;letter-spacing:.08em;margin-bottom:2px}
 nav.side ul{list-style:none;margin:0;padding:0}
 nav.side li{margin:2px 0}
 nav.side a{
-  display:block;padding:7px 10px;border-radius:6px;color:var(--ink);
-  font-size:14px;border-left:2px solid transparent
+  display:grid;grid-template-columns:28px 1fr auto;gap:6px;align-items:center;
+  padding:7px 10px;color:var(--ink);font-size:13px;border-left:2px solid transparent
 }
-nav.side a:hover{background:#182230;text-decoration:none}
-nav.side a.active{background:#172431;border-left-color:var(--acc);color:var(--acc)}
-nav.side .progress{
-  margin-top:18px;padding:10px;background:#0e1620;border:1px solid var(--line);border-radius:8px;font-size:12px
-}
-nav.side .bar{height:6px;background:#0a1118;border-radius:3px;overflow:hidden;margin-top:6px}
-nav.side .bar>i{display:block;height:100%;background:var(--acc);width:0%}
-main{padding:36px 48px;max-width:1100px}
-section{display:none;margin-bottom:48px}
+nav.side a:hover{background:#131c27;text-decoration:none;color:var(--amb)}
+nav.side a.active{background:#1a0d0a;border-left-color:var(--acc);color:var(--acc)}
+nav.side a .num{color:var(--mut);font-size:11px}
+nav.side a.active .num{color:var(--amb)}
+nav.side a .st{font-size:10px;color:var(--mut)}
+nav.side a.done .st{color:var(--ok)}
+nav.side .rank{margin-top:14px;padding:10px;background:#0a1118;border:1px solid var(--line);font-size:11px}
+nav.side .rank .lbl{color:var(--mut);letter-spacing:.1em}
+nav.side .rank .val{color:var(--amb);font-size:14px;margin:2px 0}
+nav.side .bar{height:4px;background:#05070a;overflow:hidden;margin-top:6px}
+nav.side .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--amb));width:0%}
+nav.side .btn{display:block;width:100%;margin-top:8px;background:transparent;color:var(--mut);border:1px solid var(--line);padding:5px;font-family:var(--mono);font-size:10px;cursor:pointer;letter-spacing:.1em}
+nav.side .btn:hover{color:var(--acc);border-color:var(--acc)}
+
+/* main */
+main{padding:28px 42px;max-width:1100px}
+section{display:none;margin-bottom:40px;animation:fin .25s ease-out}
 section.on{display:block}
-h2{color:var(--acc);font-family:var(--mono);border-bottom:1px solid var(--line);padding-bottom:8px;margin-top:0}
-h3{color:var(--info);margin-top:28px}
-h4{color:var(--warn);margin-top:20px;font-size:15px}
-p{margin:10px 0}
+@keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.classif{font-size:10px;letter-spacing:.3em;color:var(--acc);border:1px solid var(--acc);padding:3px 8px;display:inline-block;margin-bottom:12px}
+.dossier{color:var(--mut);font-size:11px;margin-bottom:6px;letter-spacing:.08em}
+.dossier b{color:var(--amb)}
+h2{color:var(--amb);font-family:var(--mono);border-bottom:1px solid var(--line);padding-bottom:10px;margin-top:4px;font-size:22px;letter-spacing:.04em}
+h2::before{content:">> ";color:var(--acc)}
+h3{color:var(--info);margin-top:28px;font-size:16px;letter-spacing:.03em}
+h3::before{content:"[+] ";color:var(--acc)}
+h4{color:var(--amb);margin-top:20px;font-size:14px}
+p{margin:10px 0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#b8c6d4;font-size:14.5px;line-height:1.6}
+li{margin:4px 0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#b8c6d4}
 ul,ol{margin:10px 0;padding-left:22px}
-li{margin:4px 0}
-code{font-family:var(--mono);background:#0e1620;color:var(--acc);padding:1px 5px;border-radius:4px;font-size:13.5px}
-pre{
-  background:var(--code);border:1px solid var(--line);border-radius:8px;
-  padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:13px;
-  color:#cfe3f3;position:relative
-}
+code{font-family:var(--mono);background:#131c27;color:var(--amb);padding:1px 6px;font-size:12.5px;border:1px solid var(--line)}
+pre{background:var(--code);border:1px solid var(--line);padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:12.5px;color:#cfe3f3;position:relative}
+pre::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc)}
 pre .cmt{color:#5c7489}
-pre .kw{color:var(--acc)}
-pre .str{color:var(--warn)}
+pre .kw{color:var(--amb)}
+pre .str{color:var(--ok)}
 pre .num{color:var(--info)}
-pre.label::before{
-  content:attr(data-lang);position:absolute;top:0;right:0;
-  background:var(--line);color:var(--mut);font-size:11px;padding:2px 8px;
-  border-bottom-left-radius:6px
-}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+pre.label::after{content:attr(data-lang);position:absolute;top:0;right:0;background:var(--line);color:var(--mut);font-size:10px;padding:2px 8px;letter-spacing:.1em}
+.card{background:var(--panel);border:1px solid var(--line);padding:16px 18px;margin:14px 0;position:relative}
+.card::before{content:"";position:absolute;top:-1px;left:-1px;width:10px;height:10px;border-top:1px solid var(--acc);border-left:1px solid var(--acc)}
+.card::after{content:"";position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;border-bottom:1px solid var(--acc);border-right:1px solid var(--acc)}
 .card h4{margin-top:0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#172431;color:var(--mut);margin-right:4px}
-.tag.red{background:#2a1217;color:var(--dang)}
-.tag.grn{background:#102a1f;color:var(--acc)}
-.tag.yel{background:#2a2112;color:var(--warn)}
-.tag.blu{background:#122235;color:var(--info)}
-.warn-box{border-left:3px solid var(--warn);background:#1a1710;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
-.danger-box{border-left:3px solid var(--dang);background:#1a1013;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
-.ok-box{border-left:3px solid var(--acc);background:#101a14;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
-th{color:var(--mut);font-weight:600;background:#0e1620}
-.quiz{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
-.quiz .q{font-weight:600;margin-bottom:8px}
-.quiz label{display:block;padding:6px 10px;border-radius:6px;cursor:pointer;margin:3px 0;border:1px solid transparent}
-.quiz label:hover{background:#172431}
-.quiz label.ok{background:#102a1f;border-color:var(--acc)}
-.quiz label.ko{background:#2a1217;border-color:var(--dang)}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;background:#131c27;color:var(--mut);margin-right:4px;letter-spacing:.08em;border:1px solid var(--line)}
+.warn-box{border-left:3px solid var(--amb);background:#1a1710;padding:10px 14px;margin:12px 0;color:#d8c89a}
+.danger-box{border-left:3px solid var(--dang);background:#1a0d10;padding:10px 14px;margin:12px 0;color:#e4a9ad}
+.ok-box{border-left:3px solid var(--ok);background:#0d1a14;padding:10px 14px;margin:12px 0;color:#a9d8c0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-family:system-ui,-apple-system,sans-serif}
+th{color:var(--acc);font-weight:600;background:#0a1118;letter-spacing:.06em;font-size:11px;text-transform:uppercase}
+
+.quiz{background:var(--panel);border:1px solid var(--line);padding:14px;margin:14px 0;position:relative}
+.quiz::before{content:"OBJECTIVE";position:absolute;top:-9px;left:12px;background:var(--bg);color:var(--acc);padding:0 6px;font-size:9px;letter-spacing:.2em}
+.quiz .q{font-weight:600;margin-bottom:8px;color:var(--amb);font-family:var(--mono);font-size:13px}
+.quiz label{display:block;padding:6px 10px;cursor:pointer;margin:3px 0;border:1px solid transparent;font-family:system-ui,sans-serif;color:#b8c6d4;font-size:13.5px}
+.quiz label:hover{background:#131c27;border-color:var(--line)}
+.quiz label.ok{background:#0d1a14;border-color:var(--ok);color:var(--ok)}
+.quiz label.ok::before{content:"[✓] ";color:var(--ok);font-family:var(--mono)}
+.quiz label.ko{background:#1a0d10;border-color:var(--dang);color:var(--dang)}
+.quiz label.ko::before{content:"[✗] ";color:var(--dang);font-family:var(--mono)}
 .quiz input{margin-right:8px}
-.quiz .expl{margin-top:8px;font-size:13px;color:var(--mut);display:none;padding:8px;background:#0e1620;border-radius:6px}
+.quiz .expl{margin-top:8px;font-size:12px;color:var(--mut);display:none;padding:8px;background:#0a1118;border-left:2px solid var(--info);font-family:system-ui,sans-serif;line-height:1.5}
 .quiz .expl.on{display:block}
-button{
-  background:var(--acc);color:#001;border:0;padding:7px 14px;border-radius:6px;
-  font-family:var(--mono);font-size:13px;cursor:pointer;font-weight:600
-}
-button:hover{background:#7cedb8}
-button.sec{background:#1e2b3b;color:var(--ink)}
-button.sec:hover{background:#263548}
+.quiz .xp{position:absolute;top:-9px;right:12px;background:var(--bg);color:var(--amb);padding:0 6px;font-size:9px;letter-spacing:.2em;display:none}
+.quiz .xp.on{display:block;color:var(--ok)}
+
+button.action{background:var(--acc);color:#000;border:0;padding:9px 18px;font-family:var(--mono);font-size:12px;cursor:pointer;font-weight:700;letter-spacing:.1em}
+button.action:hover{background:var(--amb)}
 .chk{list-style:none;padding-left:0}
-.chk li{padding:4px 0;cursor:pointer;user-select:none}
+.chk li{padding:4px 0;cursor:pointer;user-select:none;color:#b8c6d4}
 .chk li::before{content:"[ ]";font-family:var(--mono);color:var(--mut);margin-right:8px}
 .chk li.done{color:var(--mut);text-decoration:line-through}
-.chk li.done::before{content:"[x]";color:var(--acc)}
-.term{
-  background:#000;border:1px solid var(--line);border-radius:8px;padding:12px 14px;
-  font-family:var(--mono);font-size:13px;color:#9eb3c7;overflow:auto
-}
+.chk li.done::before{content:"[x]";color:var(--ok)}
+
+.term{background:#000;border:1px solid var(--line);padding:12px 14px;font-family:var(--mono);font-size:12px;color:#9eb3c7;overflow:auto}
 .term .pr{color:var(--acc)}
 .term .out{color:#7a8fa3}
-.kbd{font-family:var(--mono);background:#1e2b3b;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px;font-size:12px}
-footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-top:40px;padding-top:16px}
+
+.kbd{font-family:var(--mono);background:#131c27;border:1px solid var(--line);border-bottom-width:2px;padding:1px 6px;font-size:11px;color:var(--amb)}
+
+footer{color:var(--mut);font-size:11px;border-top:1px solid var(--line);margin-top:40px;padding-top:16px;letter-spacing:.08em}
+
+/* command bar */
+#cmdbar{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#000;border:1px solid var(--acc);padding:14px;width:min(560px,90vw);
+  z-index:9500;display:none;box-shadow:0 0 0 1px #000,0 10px 40px rgba(255,92,58,.3)
+}
+#cmdbar.on{display:block}
+#cmdbar .lbl{color:var(--acc);font-size:10px;letter-spacing:.2em;margin-bottom:6px}
+#cmdbar input{width:100%;background:transparent;border:0;outline:0;color:var(--amb);font-family:var(--mono);font-size:16px;border-bottom:1px solid var(--acc);padding:4px 0}
+#cmdbar .hint{color:var(--mut);font-size:11px;margin-top:8px;line-height:1.5}
+#cmdbar .hint b{color:var(--amb)}
+#cmdbar .out{color:var(--ok);font-size:12px;margin-top:8px;font-family:var(--mono);white-space:pre-wrap}
+
+/* toast */
+#toast{position:fixed;bottom:24px;right:24px;background:#000;border:1px solid var(--ok);padding:10px 16px;z-index:9400;display:none;font-size:12px;color:var(--ok);letter-spacing:.08em}
+#toast.on{display:block;animation:tin .25s}
+@keyframes tin{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
 @media (max-width:900px){
   .app{grid-template-columns:1fr}
-  nav.side{position:static;height:auto}
-  main{padding:20px}
+  nav.side{position:static;height:auto;top:0}
+  main{padding:18px}
   .grid2,.grid3{grid-template-columns:1fr}
+  .topbar{font-size:9px}
+  .topbar .meta{gap:8px}
 }
 </style>
 </head>
 <body>
+
+<div id="boot"><pre id="boottxt"></pre></div>
+
+<div class="topbar">
+  <div class="brand">HACKTRACK</div>
+  <div class="meta">
+    <span>OP <b id="op">—</b></span>
+    <span>RANK <b id="rk">—</b></span>
+    <span>XP <b id="xp">0</b></span>
+    <span>UPTIME <b id="ut">00:00</b></span>
+    <span class="hide-s">TRANS <b>CLASSIFIED</b></span>
+  </div>
+  <div class="ctl">
+    <button onclick="toggleCmd()" title="Ctrl+K">⌘K</button>
+    <button onclick="toggleScan()">SCAN</button>
+    <button onclick="resetAll()">RESET</button>
+  </div>
+</div>
+
 <div class="app">
 
 <nav class="side">
-  <h1>CyberLab</h1>
-  <div class="sub">apprentissage offensif &amp; défensif — FR</div>
+  <div class="head">
+    <b>MISSION DOSSIER</b>
+    <span>field manual // FR</span>
+  </div>
   <ul id="toc">
-    <li><a href="#intro" class="active">00 — Démarrer ici</a></li>
-    <li><a href="#fondations">01 — Fondations</a></li>
-    <li><a href="#linux">02 — Linux &amp; shell</a></li>
-    <li><a href="#reseau">03 — Réseau TCP/IP</a></li>
-    <li><a href="#crypto">04 — Cryptographie</a></li>
-    <li><a href="#web">05 — Sécurité web</a></li>
-    <li><a href="#systemes">06 — Systèmes &amp; AD</a></li>
-    <li><a href="#reverse">07 — Reverse engineering</a></li>
-    <li><a href="#malware">08 — Malware &amp; EDR</a></li>
-    <li><a href="#forensics">09 — Forensics / DFIR</a></li>
-    <li><a href="#redteam">10 — Red team / pentest</a></li>
-    <li><a href="#opsec">11 — OPSEC</a></li>
-    <li><a href="#labs">12 — Labs &amp; CTF</a></li>
-    <li><a href="#ressources">13 — Ressources</a></li>
-    <li><a href="#quiz">14 — Quiz final</a></li>
+    <li><a href="#intro" class="active"><span class="num">00</span><span>Briefing initial</span><span class="st">—</span></a></li>
+    <li><a href="#fondations"><span class="num">01</span><span>Fondations</span><span class="st">—</span></a></li>
+    <li><a href="#linux"><span class="num">02</span><span>Linux &amp; shell</span><span class="st">—</span></a></li>
+    <li><a href="#reseau"><span class="num">03</span><span>Réseau TCP/IP</span><span class="st">—</span></a></li>
+    <li><a href="#crypto"><span class="num">04</span><span>Cryptographie</span><span class="st">—</span></a></li>
+    <li><a href="#web"><span class="num">05</span><span>Sécurité web</span><span class="st">—</span></a></li>
+    <li><a href="#systemes"><span class="num">06</span><span>Systèmes &amp; AD</span><span class="st">—</span></a></li>
+    <li><a href="#reverse"><span class="num">07</span><span>Reverse</span><span class="st">—</span></a></li>
+    <li><a href="#malware"><span class="num">08</span><span>Malware &amp; EDR</span><span class="st">—</span></a></li>
+    <li><a href="#forensics"><span class="num">09</span><span>Forensics / DFIR</span><span class="st">—</span></a></li>
+    <li><a href="#redteam"><span class="num">10</span><span>Red team</span><span class="st">—</span></a></li>
+    <li><a href="#opsec"><span class="num">11</span><span>OPSEC</span><span class="st">—</span></a></li>
+    <li><a href="#labs"><span class="num">12</span><span>Labs &amp; CTF</span><span class="st">—</span></a></li>
+    <li><a href="#ressources"><span class="num">13</span><span>Ressources</span><span class="st">—</span></a></li>
+    <li><a href="#quiz"><span class="num">14</span><span>Final sweep</span><span class="st">—</span></a></li>
   </ul>
-  <div class="progress">
-    <div>Progression modules</div>
+  <div class="rank">
+    <div class="lbl">PROGRESSION</div>
+    <div class="val" id="rankLbl">RECRUIT</div>
     <div class="bar"><i id="pbar"></i></div>
-    <div id="ptxt" style="margin-top:6px"></div>
-    <button class="sec" style="margin-top:8px;width:100%" onclick="resetAll()">Réinitialiser</button>
+    <div id="ptxt" style="margin-top:6px;color:var(--mut)">0 / 9 objectifs</div>
   </div>
 </nav>
 
 <main>
 
 <section id="intro" class="on">
-  <h2>00 — Démarrer ici</h2>
-  <p>CyberLab est un parcours structuré pour apprendre la cybersécurité de zéro jusqu'à un niveau opérationnel : attaquer pour comprendre, défendre pour protéger. Chaque module empile sur le précédent. Les quiz et checklists sont sauvegardés dans ton navigateur (<code>localStorage</code>).</p>
+  <div class="classif">// TOP SECRET — OPERATOR EYES ONLY //</div>
+  <div class="dossier">DOSSIER: <b>HT-00</b> · BRIEFING INITIAL · ISSUED <span id="date0"></span></div>
+  <h2>00 — Briefing initial</h2>
+  <p>HackTrack est un protocole d'entraînement opérateur pour attaquer, défendre, comprendre. Chaque dossier empile sur le précédent. Les objectifs (quiz) et les checklists sont stockés localement (<code>localStorage</code>) — ta progression est reliée à ton <b>callsign</b>, qui t'a été attribué au boot. Garde-le, c'est ton identité d'opérateur sur cette station.</p>
 
   <div class="card">
-    <h4>Comment utiliser ce site</h4>
+    <h4>Protocole d'engagement</h4>
     <ol>
-      <li>Lis le module dans l'ordre. Les notions se chevauchent.</li>
+      <li>Lis les dossiers dans l'ordre. Les notions se chevauchent.</li>
       <li>Fais tourner les commandes dans une VM — jamais sur ta machine hôte au début.</li>
-      <li>Passe le quiz à la fin de chaque module. Score &gt; 80% = tu peux avancer.</li>
-      <li>Après le module 12, va casser des choses sur HackTheBox / TryHackMe.</li>
+      <li>Valide chaque objectif en fin de dossier. Score > 80% = tu avances.</li>
+      <li>Après le dossier 12, va casser des choses sur HackTheBox / TryHackMe.</li>
     </ol>
   </div>
 
@@ -164,7 +242,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-t
     <strong>Cadre légal.</strong> Tester un système sans autorisation écrite est un délit (art. 323-1 à 323-7 du Code pénal, FR / Computer Fraud and Abuse Act, US). Les techniques décrites ici s'exercent sur <em>tes</em> machines, des VM isolées, des plateformes qui autorisent l'intrusion (HTB, THM, portswigger, etc.), ou dans le cadre d'un contrat de pentest signé.
   </div>
 
-  <h3>Setup labo recommandé</h3>
+  <h3>Setup laboratoire — matériel requis</h3>
   <div class="grid2">
     <div class="card">
       <h4>Hyperviseur</h4>
@@ -192,9 +270,15 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-t
     <li><b>Jusqu'où ?</b> — budget, surface d'attaque acceptable, tolérance à l'incident.</li>
   </ol>
   <p>Toute décision sécu redescend à ces trois. Un contrôle qui ne répond à aucune des trois est du théâtre.</p>
+
+  <div class="ok-box">
+    <b>Astuce opérateur.</b> Appuie sur <span class="kbd">Ctrl</span>+<span class="kbd">K</span> à n'importe quel moment pour ouvrir la barre de commande. Tape <code>help</code> pour voir les ordres disponibles.
+  </div>
 </section>
 
 <section id="fondations">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-01</b> · FONDATIONS</div>
   <h2>01 — Fondations</h2>
 
   <h3>La triade CIA</h3>
@@ -235,7 +319,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-t
   <h3>MITRE ATT&amp;CK</h3>
   <p>Catalogue vivant des <i>tactiques</i> (quoi) et <i>techniques</i> (comment) utilisées par les attaquants réels. 14 tactiques, des centaines de techniques. Référence à l'usage défenseur comme offenseur. À bookmarker : <code>attack.mitre.org</code>.</p>
 
-  <div class="quiz" data-q="f1">
+  <div class="quiz" data-q="f1"><span class="xp">+10 XP</span>
     <div class="q">1. Un attaquant chiffre tes fichiers et demande une rançon. Quelle propriété CIA est principalement attaquée ?</div>
     <label><input type="radio" name="f1" value="c"> Confidentialité</label>
     <label><input type="radio" name="f1" value="i"> Intégrité</label>
@@ -243,7 +327,7 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-t
     <div class="expl">Les fichiers chiffrés par ransomware restent présents mais inutilisables — c'est la disponibilité qui tombe. Si l'attaquant exfiltre aussi (double extorsion), la confidentialité tombe aussi, mais l'impact immédiat du chiffrement = indisponibilité.</div>
   </div>
 
-  <div class="quiz" data-q="f2">
+  <div class="quiz" data-q="f2"><span class="xp">+10 XP</span>
     <div class="q">2. Vulnérabilité × menace × impact. Qu'est-ce que ça donne ?</div>
     <label><input type="radio" name="f2" value="a"> Un exploit</label>
     <label><input type="radio" name="f2" value="b" data-ok> Un risque</label>
@@ -253,6 +337,8 @@ footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-t
 </section>
 
 <section id="linux">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-02</b> · LINUX &amp; SHELL</div>
   <h2>02 — Linux &amp; shell</h2>
   <p>Linux est la lingua franca de la cyber. Serveurs, outils offensifs, forensics, cloud — tout passe par un shell POSIX. Tu dois être à l'aise avec <code>bash</code> avant tout le reste.</p>
 
@@ -323,7 +409,7 @@ done</pre>
 <span class="pr">kali@kali:~$</span> curl -s ifconfig.me ; echo
   </div>
 
-  <h3>Checklist module</h3>
+  <h3>Checklist opérateur</h3>
   <ul class="chk" data-k="linux">
     <li>Je sais naviguer sans utiliser la souris</li>
     <li>Je comprends <code>chmod</code> en octal</li>
@@ -333,7 +419,7 @@ done</pre>
     <li>Je sais pipe et rediriger (<code>|</code>, <code>&gt;</code>, <code>2&gt;&amp;1</code>)</li>
   </ul>
 
-  <div class="quiz" data-q="l1">
+  <div class="quiz" data-q="l1"><span class="xp">+10 XP</span>
     <div class="q">Trouver tous les binaires SUID du système :</div>
     <label><input type="radio" name="l1"> <code>ls -la / | grep s</code></label>
     <label><input type="radio" name="l1" data-ok> <code>find / -perm -4000 2&gt;/dev/null</code></label>
@@ -343,6 +429,8 @@ done</pre>
 </section>
 
 <section id="reseau">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-03</b> · RÉSEAU TCP/IP</div>
   <h2>03 — Réseau TCP/IP</h2>
 
   <h3>Le modèle OSI vs TCP/IP</h3>
@@ -440,7 +528,7 @@ dig @8.8.8.8 example.com ANY
 dig axfr example.com @ns1.example.com   <span class="cmt"># zone transfer — rare mais exploitable</span>
 host -t txt example.com                 <span class="cmt"># SPF, DKIM, DMARC lisibles ici</span></pre>
 
-  <div class="quiz" data-q="r1">
+  <div class="quiz" data-q="r1"><span class="xp">+10 XP</span>
     <div class="q">Le handshake TCP est :</div>
     <label><input type="radio" name="r1"> SYN → ACK → FIN</label>
     <label><input type="radio" name="r1" data-ok> SYN → SYN/ACK → ACK</label>
@@ -448,7 +536,7 @@ host -t txt example.com                 <span class="cmt"># SPF, DKIM, DMARC lis
     <div class="expl">Trois étapes : client envoie SYN, serveur répond SYN+ACK, client confirme ACK. Après, la connexion est établie.</div>
   </div>
 
-  <div class="quiz" data-q="r2">
+  <div class="quiz" data-q="r2"><span class="xp">+10 XP</span>
     <div class="q">Port 445 ouvert sur une cible Windows, premier réflexe :</div>
     <label><input type="radio" name="r2"> Scan UDP complet</label>
     <label><input type="radio" name="r2" data-ok> Enum SMB (shares, users, OS, vulns)</label>
@@ -458,6 +546,8 @@ host -t txt example.com                 <span class="cmt"># SPF, DKIM, DMARC lis
 </section>
 
 <section id="crypto">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-04</b> · CRYPTOGRAPHIE</div>
   <h2>04 — Cryptographie</h2>
 
   <h3>Les trois familles</h3>
@@ -536,7 +626,7 @@ hashcat -m 22000 wifi.hc22000 rockyou.txt      <span class="cmt"># WPA/WPA2</spa
 john --wordlist=rockyou.txt hashes.txt
 john --show hashes.txt</pre>
 
-  <div class="quiz" data-q="c1">
+  <div class="quiz" data-q="c1"><span class="xp">+10 XP</span>
     <div class="q">Un service te montre toujours le même ciphertext pour le même plaintext — même sur deux blocs identiques. Mode utilisé ?</div>
     <label><input type="radio" name="c1"> GCM</label>
     <label><input type="radio" name="c1" data-ok> ECB</label>
@@ -546,6 +636,8 @@ john --show hashes.txt</pre>
 </section>
 
 <section id="web">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-05</b> · SÉCURITÉ WEB</div>
   <h2>05 — Sécurité web</h2>
   <p>Le web est la plus grande surface d'attaque du monde. L'<b>OWASP Top 10</b> catalogue les classes de vulnérabilités les plus répandues. On va les voir en profondeur.</p>
 
@@ -673,7 +765,7 @@ url=file:///etc/passwd                           <span class="cmt"># si schéma 
     <li><b>Decoder</b>, <b>Comparer</b>, extensions (<i>Autorize</i>, <i>JWT Editor</i>)</li>
   </ol>
 
-  <div class="quiz" data-q="w1">
+  <div class="quiz" data-q="w1"><span class="xp">+10 XP</span>
     <div class="q">Meilleure défense contre les injections SQL :</div>
     <label><input type="radio" name="w1"> Blacklister les mots-clés SQL dans l'input</label>
     <label><input type="radio" name="w1"> WAF uniquement</label>
@@ -681,7 +773,7 @@ url=file:///etc/passwd                           <span class="cmt"># si schéma 
     <div class="expl">La blacklist se contourne (encodage, commentaires). Le WAF aide mais n'est pas une mitigation primaire. Les prepared statements séparent code et données au niveau du driver — l'input ne peut plus devenir du SQL.</div>
   </div>
 
-  <div class="quiz" data-q="w2">
+  <div class="quiz" data-q="w2"><span class="xp">+10 XP</span>
     <div class="q">Un cookie de session sans flag <code>HttpOnly</code> permet :</div>
     <label><input type="radio" name="w2" data-ok> Son vol via XSS depuis <code>document.cookie</code></label>
     <label><input type="radio" name="w2"> Son interception sur le réseau</label>
@@ -691,6 +783,8 @@ url=file:///etc/passwd                           <span class="cmt"># si schéma 
 </section>
 
 <section id="systemes">
+  <div class="classif">// CONFIDENTIAL //</div>
+  <div class="dossier">DOSSIER: <b>HT-06</b> · SYSTÈMES &amp; ACTIVE DIRECTORY</div>
   <h2>06 — Systèmes &amp; Active Directory</h2>
 
   <h3>Windows essentials</h3>
@@ -771,7 +865,7 @@ impacket-psexec -hashes :&lt;ntlmhash&gt; admin@10.0.0.5</pre>
     <li>Automatiser : <code>winPEAS.exe</code>, <code>PowerUp.ps1</code>, <code>Seatbelt.exe</code></li>
   </ul>
 
-  <div class="quiz" data-q="s1">
+  <div class="quiz" data-q="s1"><span class="xp">+10 XP</span>
     <div class="q">Tu craques un hash NetNTLMv2 obtenu via Responder. Hashcat mode ?</div>
     <label><input type="radio" name="s1"> 1000</label>
     <label><input type="radio" name="s1" data-ok> 5600</label>
@@ -781,6 +875,8 @@ impacket-psexec -hashes :&lt;ntlmhash&gt; admin@10.0.0.5</pre>
 </section>
 
 <section id="reverse">
+  <div class="classif">// CONFIDENTIAL //</div>
+  <div class="dossier">DOSSIER: <b>HT-07</b> · REVERSE ENGINEERING</div>
   <h2>07 — Reverse engineering</h2>
   <p>Comprendre un binaire sans son code source. Base de l'analyse malware, de la recherche de vulns, du cracking de protections.</p>
 
@@ -883,6 +979,8 @@ check:
 </section>
 
 <section id="malware">
+  <div class="classif">// SECRET //</div>
+  <div class="dossier">DOSSIER: <b>HT-08</b> · MALWARE &amp; EDR</div>
   <h2>08 — Malware &amp; EDR</h2>
 
   <h3>Taxonomie</h3>
@@ -946,7 +1044,7 @@ check:
   <h3>Yara — exemple</h3>
   <pre data-lang="yara" class="label">rule Suspect_Loader_PowerShell {
     meta:
-        author = "cyberlab"
+        author = "hacktrack"
         desc   = "PS loader with base64 + IEX"
     strings:
         $a = "FromBase64String" nocase
@@ -959,6 +1057,8 @@ check:
 </section>
 
 <section id="forensics">
+  <div class="classif">// SECRET //</div>
+  <div class="dossier">DOSSIER: <b>HT-09</b> · FORENSICS / DFIR</div>
   <h2>09 — Forensics / DFIR</h2>
   <p>Quand quelque chose s'est passé, et qu'on veut savoir quoi, comment, qui, et comment éviter que ça recommence.</p>
 
@@ -1022,6 +1122,8 @@ vol -f mem.raw windows.dumpfiles --pid 4820</pre>
 </section>
 
 <section id="redteam">
+  <div class="classif">// SECRET //</div>
+  <div class="dossier">DOSSIER: <b>HT-10</b> · RED TEAM / PENTEST</div>
   <h2>10 — Red team / pentest</h2>
 
   <h3>Méthodologie — PTES / OSSTMM / MITRE</h3>
@@ -1048,7 +1150,7 @@ cat subs.txt | dnsx -silent | httpx -silent -status-code -title -tech-detect
 naabu -list resolved.txt -top-ports 1000
 
 <span class="cmt"># recherche buckets, repos leak</span>
-gitleaks detect -s . 
+gitleaks detect -s .
 trufflehog github --org target
 <span class="cmt"># Google dorks : site:target.com ext:pdf, filetype:env password</span></pre>
 
@@ -1094,6 +1196,8 @@ trufflehog github --org target
 </section>
 
 <section id="opsec">
+  <div class="classif">// TOP SECRET //</div>
+  <div class="dossier">DOSSIER: <b>HT-11</b> · OPSEC</div>
   <h2>11 — OPSEC</h2>
   <p>Operational Security : ne pas se faire voir, ne pas se faire identifier, ne pas contaminer. Vaut autant pour le red teamer que pour le chercheur sous NDA.</p>
 
@@ -1132,6 +1236,8 @@ trufflehog github --org target
 </section>
 
 <section id="labs">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-12</b> · LABS &amp; CTF</div>
   <h2>12 — Labs &amp; CTF</h2>
   <p>La cyber ne s'apprend pas en lecture seule. Les plateformes ci-dessous donnent des cibles légales à casser, de débutant à expert.</p>
 
@@ -1197,6 +1303,8 @@ trufflehog github --org target
 </section>
 
 <section id="ressources">
+  <div class="classif">// RESTRICTED //</div>
+  <div class="dossier">DOSSIER: <b>HT-13</b> · RESSOURCES</div>
   <h2>13 — Ressources</h2>
 
   <h3>Livres</h3>
@@ -1269,58 +1377,152 @@ trufflehog github --org target
 </section>
 
 <section id="quiz">
-  <h2>14 — Quiz final (20 questions)</h2>
-  <p>Score &gt; 16/20 : tu as de solides bases généralistes, va casser des choses sur HTB.</p>
+  <div class="classif">// FINAL EVALUATION //</div>
+  <div class="dossier">DOSSIER: <b>HT-14</b> · FINAL SWEEP · 20 OBJECTIVES</div>
+  <h2>14 — Final sweep</h2>
+  <p>Score &gt; 16/20 : tu as de solides bases généralistes, va casser des choses sur HTB. Ton rang final sera verrouillé selon le résultat.</p>
 
   <div id="finalquiz"></div>
-  <button onclick="scoreFinal()">Calculer mon score</button>
-  <div id="finalscore" style="margin-top:14px;font-family:var(--mono);color:var(--acc)"></div>
+  <button class="action" onclick="scoreFinal()">EXECUTE ASSESSMENT</button>
+  <div id="finalscore" style="margin-top:14px;font-family:var(--mono);color:var(--amb);font-size:14px"></div>
 </section>
 
 <footer>
-  CyberLab — fichier unique, offline, apprentissage.
+  HACKTRACK // single-file field manual // offline, apprentissage //
   Toutes les techniques décrites s'exercent sur tes propres systèmes ou dans un cadre autorisé.
 </footer>
 
 </main>
 </div>
 
+<!-- command bar -->
+<div id="cmdbar">
+  <div class="lbl">OPERATOR COMMAND // Ctrl+K to close</div>
+  <input id="cmdin" autocomplete="off" placeholder="help, goto 03, whoami, rank, theme, scan, clear...">
+  <div class="hint">
+    <b>goto NN</b> — saute au dossier · <b>whoami</b> — ton callsign · <b>rank</b> — ton rang · <b>theme</b> — bascule couleurs ·
+    <b>scan</b> — toggle scanlines · <b>clear</b> — reset progression · <b>help</b> — liste
+  </div>
+  <div class="out" id="cmdout"></div>
+</div>
+
+<div id="toast"></div>
+
 <script>
-// nav routing
+/* ============== OPERATOR IDENTITY ============== */
+const ADJ = ['GHOST','SILENT','IRON','BLACK','VOID','NIGHT','COLD','PALE','LONE','RED','GREY','ECHO','PHANTOM','ZERO','CYBER','WIRED','HOLLOW','ROGUE'];
+const NOUN = ['RAVEN','WOLF','FALCON','VIPER','HAWK','FOX','OWL','SHARK','LYNX','ORCA','PANTHER','CROW','HORNET','DRAKE','KITE','SPECTER','REAPER','SIGIL'];
+function newCallsign(){
+  const a = ADJ[Math.floor(Math.random()*ADJ.length)];
+  const n = NOUN[Math.floor(Math.random()*NOUN.length)];
+  const id = Math.floor(Math.random()*0xffff).toString(16).toUpperCase().padStart(4,'0');
+  return `${a}-${n}-${id}`;
+}
+let callsign = localStorage.getItem('ht_op') || null;
+if(!callsign){ callsign = newCallsign(); localStorage.setItem('ht_op', callsign); }
+
+/* ============== RANK + XP ============== */
+const RANKS = [
+  {n:'RECRUIT',     min:0,   color:'#5f7083'},
+  {n:'OPERATIVE',   min:40,  color:'#6cb8ff'},
+  {n:'SPECIALIST',  min:90,  color:'#58e6a4'},
+  {n:'FIELD-AGENT', min:150, color:'#ffb454'},
+  {n:'DIRECTOR',    min:230, color:'#ff5c3a'},
+];
+function currentRank(xp){
+  let r = RANKS[0];
+  for(const x of RANKS) if(xp >= x.min) r = x;
+  return r;
+}
+
+/* ============== BOOT SEQUENCE ============== */
+const BOOT_LINES = [
+  '[ OK ] crypto subsystem loaded',
+  '[ OK ] secure channel established via TOR relay chain',
+  '[ OK ] clearance verified',
+  '[ ** ] authenticating operator...',
+  '[ OK ] callsign assigned: ' + callsign,
+  '[ ** ] loading dossier HT-00 ... HT-14',
+  '[ OK ] field manual ready',
+  '',
+  '>> transmission classified. welcome, operator.'
+];
+const bootEl = document.getElementById('boottxt');
+const bootBox = document.getElementById('boot');
+let bootIdx = 0;
+function bootStep(){
+  if(bootIdx >= BOOT_LINES.length){
+    setTimeout(()=>{ bootBox.classList.add('gone'); setTimeout(()=>bootBox.remove(), 500); }, 500);
+    return;
+  }
+  const l = BOOT_LINES[bootIdx++];
+  bootEl.textContent += l + '\n';
+  setTimeout(bootStep, 180 + Math.random()*120);
+}
+if(localStorage.getItem('ht_booted')){
+  bootBox.remove();
+}else{
+  localStorage.setItem('ht_booted','1');
+  bootEl.innerHTML = '';
+  bootStep();
+}
+
+/* ============== DATE HEADER ============== */
+const d = new Date();
+const dstr = d.toISOString().slice(0,10) + ' // ' + d.toTimeString().slice(0,8) + ' CET';
+const d0 = document.getElementById('date0'); if(d0) d0.textContent = dstr;
+
+/* ============== UPTIME ============== */
+const startedAt = Date.now();
+function fmtUp(ms){
+  const s = Math.floor(ms/1000);
+  const m = Math.floor(s/60);
+  const h = Math.floor(m/60);
+  return (h<10?'0':'')+h+':'+((m%60)<10?'0':'')+(m%60);
+}
+setInterval(()=>{ document.getElementById('ut').textContent = fmtUp(Date.now()-startedAt); }, 1000);
+
+/* ============== NAVIGATION ============== */
 const links = document.querySelectorAll('nav.side a');
 const sections = document.querySelectorAll('main section');
 function show(id){
+  const el = document.getElementById(id);
+  if(!el) return;
   sections.forEach(s=>s.classList.toggle('on', s.id===id));
   links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
   window.scrollTo({top:0,behavior:'instant'});
-  localStorage.setItem('cl_last', id);
+  localStorage.setItem('ht_last', id);
 }
 links.forEach(a=>a.addEventListener('click',e=>{
   e.preventDefault();
   show(a.getAttribute('href').slice(1));
 }));
-const last = localStorage.getItem('cl_last');
+const last = localStorage.getItem('ht_last');
 if(last && document.getElementById(last)) show(last);
 
-// quiz handling (per-question)
+/* ============== QUIZ HANDLING ============== */
 document.querySelectorAll('.quiz').forEach(q=>{
-  const key = 'cl_q_'+q.dataset.q;
+  const key = 'ht_q_'+q.dataset.q;
   const saved = localStorage.getItem(key);
   q.querySelectorAll('label').forEach(lab=>{
     const inp = lab.querySelector('input');
     if(saved && inp.value===saved){
       inp.checked = true;
-      markQuiz(q);
+      markQuiz(q, true);
     }
     inp.addEventListener('change',()=>{
       localStorage.setItem(key, inp.value);
-      markQuiz(q);
+      const wasOk = q.querySelector('.xp.on');
+      markQuiz(q, false);
+      const isOk = q.querySelector('.xp.on');
+      if(!wasOk && isOk){ toast('+10 XP acquired · '+q.dataset.q.toUpperCase()); }
       updateProgress();
     });
   });
 });
-function markQuiz(q){
+function markQuiz(q, silent){
   const expl = q.querySelector('.expl');
+  const xp = q.querySelector('.xp');
   q.querySelectorAll('label').forEach(l=>l.classList.remove('ok','ko'));
   const chosen = q.querySelector('input:checked');
   if(!chosen) return;
@@ -1328,13 +1530,16 @@ function markQuiz(q){
   chosen.parentElement.classList.add(ok?'ok':'ko');
   if(!ok){
     q.querySelector('input[data-ok]').parentElement.classList.add('ok');
+    if(xp) xp.classList.remove('on');
+  }else{
+    if(xp) xp.classList.add('on');
   }
   if(expl) expl.classList.add('on');
 }
 
-// checklist persistence
+/* ============== CHECKLIST ============== */
 document.querySelectorAll('.chk').forEach(ul=>{
-  const key = 'cl_chk_'+ul.dataset.k;
+  const key = 'ht_chk_'+ul.dataset.k;
   const state = JSON.parse(localStorage.getItem(key) || '[]');
   [...ul.children].forEach((li,i)=>{
     if(state[i]) li.classList.add('done');
@@ -1347,26 +1552,113 @@ document.querySelectorAll('.chk').forEach(ul=>{
   });
 });
 
-// progress bar — count completed quizzes + checklists
+/* ============== PROGRESS + RANK ============== */
 function updateProgress(){
-  const total = document.querySelectorAll('.quiz').length;
+  const quizzes = document.querySelectorAll('.quiz');
+  const total = quizzes.length;
   let done = 0;
-  document.querySelectorAll('.quiz').forEach(q=>{
-    if(q.querySelector('input:checked[data-ok]')) done++;
-  });
-  const pct = total? Math.round(done/total*100):0;
+  quizzes.forEach(q=>{ if(q.querySelector('input:checked[data-ok]')) done++; });
+  let chkDone = 0;
+  document.querySelectorAll('.chk li.done').forEach(()=>chkDone++);
+  const xp = done*10 + chkDone*5;
+  const pct = total ? Math.round(done/total*100) : 0;
   document.getElementById('pbar').style.width = pct+'%';
-  document.getElementById('ptxt').textContent = done+' / '+total+' quiz validés ('+pct+'%)';
+  document.getElementById('ptxt').textContent = done+' / '+total+' objectifs · '+pct+'%';
+  document.getElementById('xp').textContent = xp;
+  const rk = currentRank(xp);
+  document.getElementById('rk').textContent = rk.n;
+  document.getElementById('rk').style.color = rk.color;
+  document.getElementById('rankLbl').textContent = rk.n;
+  document.getElementById('rankLbl').style.color = rk.color;
+  // check rank-up
+  const prevXp = parseInt(localStorage.getItem('ht_lastxp')||'0');
+  const prevRk = currentRank(prevXp).n;
+  if(rk.n !== prevRk && xp > prevXp){
+    toast('RANK PROMOTION // '+rk.n);
+  }
+  localStorage.setItem('ht_lastxp', String(xp));
+  // sidebar completion marks
+  document.querySelectorAll('nav.side a').forEach(a=>{
+    const id = a.getAttribute('href').slice(1);
+    const sec = document.getElementById(id);
+    if(!sec) return;
+    const qs = sec.querySelectorAll('.quiz');
+    if(!qs.length) return;
+    let ok = 0; qs.forEach(q=>{ if(q.querySelector('input:checked[data-ok]')) ok++; });
+    const st = a.querySelector('.st');
+    if(st){
+      if(ok === qs.length){ a.classList.add('done'); st.textContent = '✓'; }
+      else if(ok > 0){ st.textContent = ok+'/'+qs.length; }
+      else { st.textContent = '—'; }
+    }
+  });
 }
+document.getElementById('op').textContent = callsign;
 updateProgress();
 
+/* ============== RESET ============== */
 function resetAll(){
-  if(!confirm('Tout réinitialiser (quiz, checklists, progression) ?')) return;
-  Object.keys(localStorage).filter(k=>k.startsWith('cl_')).forEach(k=>localStorage.removeItem(k));
+  if(!confirm('Purger la progression opérateur (quiz, checklists, callsign, XP) ?')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('ht_')).forEach(k=>localStorage.removeItem(k));
   location.reload();
 }
 
-// final quiz
+/* ============== SCANLINES TOGGLE ============== */
+function toggleScan(){
+  document.body.classList.toggle('noscan');
+  localStorage.setItem('ht_scan', document.body.classList.contains('noscan') ? '0' : '1');
+  toast('SCANLINES ' + (document.body.classList.contains('noscan') ? 'OFF' : 'ON'));
+}
+if(localStorage.getItem('ht_scan') === '0') document.body.classList.add('noscan');
+
+/* ============== TOAST ============== */
+let toastT;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = '>> '+msg;
+  t.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>t.classList.remove('on'), 2200);
+}
+
+/* ============== COMMAND BAR ============== */
+const cmdbar = document.getElementById('cmdbar');
+const cmdin = document.getElementById('cmdin');
+const cmdout = document.getElementById('cmdout');
+function toggleCmd(){
+  cmdbar.classList.toggle('on');
+  if(cmdbar.classList.contains('on')){ cmdin.value=''; cmdout.textContent=''; setTimeout(()=>cmdin.focus(),30); }
+}
+document.addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); toggleCmd(); }
+  if(e.key==='Escape' && cmdbar.classList.contains('on')) toggleCmd();
+});
+const MODMAP = {'00':'intro','01':'fondations','02':'linux','03':'reseau','04':'crypto','05':'web','06':'systemes','07':'reverse','08':'malware','09':'forensics','10':'redteam','11':'opsec','12':'labs','13':'ressources','14':'quiz'};
+cmdin.addEventListener('keydown', e=>{
+  if(e.key!=='Enter') return;
+  const raw = cmdin.value.trim().toLowerCase();
+  if(!raw) return;
+  const [cmd, ...rest] = raw.split(/\s+/);
+  const arg = rest.join(' ');
+  let out = '';
+  if(cmd==='help'){ out='goto NN · whoami · rank · xp · theme · scan · clear · exit'; }
+  else if(cmd==='whoami'){ out='callsign: '+callsign+' // transmission classified'; }
+  else if(cmd==='rank'){ const xp = parseInt(document.getElementById('xp').textContent); const r=currentRank(xp); out='rank: '+r.n+' @ '+xp+' XP'; }
+  else if(cmd==='xp'){ out='current XP: '+document.getElementById('xp').textContent; }
+  else if(cmd==='scan'){ toggleScan(); out='scanlines toggled'; }
+  else if(cmd==='theme'){ document.documentElement.classList.toggle('amber'); out='theme toggled'; }
+  else if(cmd==='clear'||cmd==='reset'){ resetAll(); return; }
+  else if(cmd==='exit'){ toggleCmd(); return; }
+  else if(cmd==='goto'){
+    const target = MODMAP[arg.padStart(2,'0')] || arg;
+    if(document.getElementById(target)){ show(target); toggleCmd(); return; }
+    else out='no such dossier: '+arg;
+  }
+  else { out='unknown command: '+cmd+' // try `help`'; }
+  cmdout.textContent = out;
+});
+
+/* ============== FINAL QUIZ ============== */
 const FINAL = [
   {q:"Qu'est-ce qu'un IDOR ?",a:["Un chiffrement faible","Un défaut de contrôle d'accès sur un identifiant d'objet","Un header HTTP","Un format de hash"],ok:1},
   {q:"Mode AES à éviter absolument :",a:["GCM","CBC avec IV aléatoire","ECB","CTR"],ok:2},
@@ -1383,7 +1675,7 @@ const FINAL = [
   {q:"La reconnaissance DNS 'AXFR' tente :",a:["Un ping","Un transfert de zone","Une résolution inverse","Une attaque DoS"],ok:1},
   {q:"GTFOBins catalogue :",a:["Les CVE Windows","Des abus de binaires Unix légitimes","Des règles YARA","Des exploits web"],ok:1},
   {q:"Pass-the-Hash exploite :",a:["Un bug du noyau","Le fait que NTLM accepte un hash comme preuve","Une faille TLS","Un cookie non chiffré"],ok:1},
-  {q:"Le MITRE ATT&amp;CK décrit :",a:["Des CVE","Des produits sécu","Des tactiques et techniques d'adversaires","Des normes ISO"],ok:2},
+  {q:"Le MITRE ATT&CK décrit :",a:["Des CVE","Des produits sécu","Des tactiques et techniques d'adversaires","Des normes ISO"],ok:2},
   {q:"Pour un bucket S3 public mal configuré, vulnérabilité OWASP :",a:["A01 Broken Access Control","A05 Security Misconfiguration","A10 SSRF","A02 Crypto"],ok:1},
   {q:"Dans un pentest, l'étape immédiatement après l'exploitation :",a:["Reporting","Post-exploitation","Scope","Reconnaissance"],ok:1},
   {q:"ETW patching sert à :",a:["Mettre à jour Windows","Masquer les événements de télémétrie","Déchiffrer TLS","Lire LSASS"],ok:1},
@@ -1393,7 +1685,7 @@ const fq = document.getElementById('finalquiz');
 FINAL.forEach((item,i)=>{
   const div = document.createElement('div');
   div.className = 'quiz';
-  div.innerHTML = '<div class="q">'+(i+1)+'. '+item.q+'</div>' +
+  div.innerHTML = '<div class="q">OBJ-'+(i+1).toString().padStart(2,'0')+' · '+item.q+'</div>' +
     item.a.map((t,j)=>'<label><input type="radio" name="fq'+i+'" value="'+j+'"> '+t+'</label>').join('');
   fq.appendChild(div);
 });
@@ -1404,11 +1696,27 @@ function scoreFinal(){
     if(sel && parseInt(sel.value)===item.ok) s++;
   });
   const out = document.getElementById('finalscore');
-  out.textContent = 'Score : '+s+' / '+FINAL.length +
-    (s>=16 ? ' — solide. Va casser des machines sur HTB.' :
-     s>=10 ? ' — correct. Re-révise les modules faibles.' :
-             ' — reprends depuis le module 01.');
+  let tag;
+  if(s>=16) tag='CLEARED // field-ready. Go operate on HTB.';
+  else if(s>=10) tag='PARTIAL // revise weak dossiers before deployment.';
+  else tag='FAILED // restart from HT-01.';
+  out.innerHTML = '>> SWEEP COMPLETE // score: '+s+' / '+FINAL.length+'<br>>> '+tag;
+  toast('ASSESSMENT: '+s+'/'+FINAL.length);
 }
+
+/* ============== KONAMI EGG ============== */
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let kbuf = [];
+document.addEventListener('keydown', e=>{
+  kbuf.push(e.key);
+  if(kbuf.length > KONAMI.length) kbuf.shift();
+  if(kbuf.join(',') === KONAMI.join(',')){
+    document.body.style.filter = document.body.style.filter ? '' : 'hue-rotate(140deg)';
+    toast('>> GHOST MODE // chromatic shift engaged');
+    kbuf = [];
+  }
+});
 </script>
 </body>
 </html>
+
